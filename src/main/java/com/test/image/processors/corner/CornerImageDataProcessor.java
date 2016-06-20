@@ -14,7 +14,7 @@ public final class CornerImageDataProcessor implements ImageDataProcessor {
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage image) {
-        final GrayScaleImage edgeImage = edgeProcessor.processImage(image);
+        final GrayScaleImage edgeImage = edgeProcessor.processImage(image); //TODO Replace this step with a basic gradients evaluation (?).
         final Gradients gradients = edgeProcessor.getGradients();
         final ImageMetaData cornerScores = cornerScoreEvaluator.evaluateCornerScores(edgeImage, gradients);
 
