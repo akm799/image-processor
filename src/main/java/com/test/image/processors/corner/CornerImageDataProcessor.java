@@ -26,7 +26,6 @@ public final class CornerImageDataProcessor implements ImageDataProcessor {
         for (int j=0 ; j<cornersOnly.getHeight() ; j++) {
             for (int i=0 ; i<cornersOnly.getWidth() ; i++) {
                 if (cornerScores.getPixelMetaData(i, j) >= config.rThreshold) {
-//                    cornersOnly.setPixel(i, j, Constants.RED_COLOUR);
                     cornersOnly.setPixel(i, j, Constants.MAX_INTENSITY);
                 } else {
                     cornersOnly.setPixel(i, j, 0);
