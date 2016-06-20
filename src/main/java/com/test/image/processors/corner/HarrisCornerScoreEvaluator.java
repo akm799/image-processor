@@ -6,10 +6,10 @@ import com.test.image.model.GrayScaleImage;
 import com.test.image.model.ImageMetaData;
 
 /**
- * Harris corner detection implementation where no image smoothing (Gaussian or other) is applied.
- * This should worked on images where adge detection has already been applied.
  *
  * http://www.cse.psu.edu/~rtc12/CSE486/lecture06.pdf
+ *
+ * http://stackoverflow.com/questions/3862225/implementing-a-harris-corner-detector
  */
 public final class HarrisCornerScoreEvaluator implements CornerScoreEvaluator {
     private final float k;
@@ -23,6 +23,7 @@ public final class HarrisCornerScoreEvaluator implements CornerScoreEvaluator {
         final ImageMetaData scores = new ImageMetaData(gradients.width, gradients.height);
 
         final int[] h = new int[3]; // 2x2 Harris matrix is symmetric for the (0,1) and (1,0) elements so we use one value to represent both.
+        //TODO Gaussian smooth the gradients before evaluating the products (?)
         final GradientProducts products = new GradientProducts(gradients);
         for (int j=0 ; j<products.height ; j++) {
             for (int i=0 ; i<products.width ; i++) {

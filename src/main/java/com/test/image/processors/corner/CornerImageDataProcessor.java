@@ -23,6 +23,7 @@ public final class CornerImageDataProcessor implements ImageDataProcessor {
 
     private GrayScaleImage buildCornersOnlyImage(ImageMetaData cornerScores) {
         final GrayScaleImage cornersOnly = new GrayScaleImage(cornerScores.getWidth(), cornerScores.getHeight());
+        //TODO Perform non-max suppression at this point (?).
         for (int j=0 ; j<cornersOnly.getHeight() ; j++) {
             for (int i=0 ; i<cornersOnly.getWidth() ; i++) {
                 if (cornerScores.getPixelMetaData(i, j) >= config.rThreshold) {
