@@ -7,6 +7,7 @@ public class Constants {
     public static final float WEST_LIMIT_NEGATIVE = -7*STEP;
     public static final int MAX_INTENSITY = 255;
     public static final int WEAK_PIXEL_INTENSITY = 127;
+    public static final int RED_COLOUR = 0xffff0000;
 
     private Constants() {}
 }

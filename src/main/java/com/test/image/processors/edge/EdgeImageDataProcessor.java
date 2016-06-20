@@ -18,8 +18,11 @@ import java.util.Collection;
 public final class EdgeImageDataProcessor implements ImageDataProcessor {
     private final EdgeConfig config = new EdgeConfig();
 
+    private Gradients gradients;
+
     @Override
     public GrayScaleImage processImage(GrayScaleImage image) {
+        setGradients(null);
         final ImageDataProcessor imageDataProcessor = buildProcessorChain(config.blurImage, config.performNonMaximumSuppression, config.performDoubleThresholdAnalysis, config.performHysterisisBlobAnalysis);
 
         return imageDataProcessor.processImage(image);
@@ -33,9 +36,9 @@ public final class EdgeImageDataProcessor implements ImageDataProcessor {
         }
 
         if (nonMaxSuppression) {
-            processors.add(new FirstEdgeApproxImageDataProcessor(new NonMaximaSuppressor()));
+            processors.add(new FirstEdgeApproxImageDataProcessor(this, new NonMaximaSuppressor()));
         } else {
-            processors.add(new FirstEdgeApproxImageDataProcessor(new IdentityGradientsProcessor()));
+            processors.add(new FirstEdgeApproxImageDataProcessor(this, new IdentityGradientsProcessor()));
         }
 
         if (doubleThreshold) {
@@ -48,17 +51,28 @@ public final class EdgeImageDataProcessor implements ImageDataProcessor {
         return new ChainImageDataProcessor(processors);
     }
 
+    public Gradients getGradients() {
+        return gradients;
+    }
+
+    void setGradients(Gradients gradients) {
+        this.gradients = gradients;
+    }
+
     private static final class FirstEdgeApproxImageDataProcessor implements ImageDataProcessor {
+        private final EdgeImageDataProcessor parent;
         private final ImageGradientsDataProcessor gradientsDataProcessor;
         private final GradientsEvaluator gradientsEvaluator = new SobelGradientsEvaluator();
 
-        FirstEdgeApproxImageDataProcessor(ImageGradientsDataProcessor gradientsDataProcessor) {
+        FirstEdgeApproxImageDataProcessor(EdgeImageDataProcessor parent, ImageGradientsDataProcessor gradientsDataProcessor) {
+            this.parent = parent;
             this.gradientsDataProcessor = gradientsDataProcessor;
         }
 
         @Override
         public GrayScaleImage processImage(GrayScaleImage image) {
             final Gradients gradients = gradientsEvaluator.gradients(image);
+            parent.setGradients(gradients);
 
             return  gradientsDataProcessor.processGradients(gradients);
         }

@@ -4,6 +4,7 @@ import com.test.image.processors.blur.ColourGaussianBlurProcessor;
 import com.test.image.processors.blur.GaussianBlurProcessor;
 import com.test.image.processors.composition.Overlay;
 import com.test.image.processors.composition.OverlayImageProcessor;
+import com.test.image.processors.corner.CornerImageProcessor;
 import com.test.image.processors.edge.EdgeImageProcessor;
 import com.test.image.processors.gray.GrayScaleImageProcessor;
 import com.test.image.processors.padding.AddPaddingImageProcessor;
@@ -21,7 +22,7 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return new EdgeImageProcessor();
+        return new CornerImageProcessor();
     }
 
     private FileImageProcessor getGaussianBlurImageProcessor() {
