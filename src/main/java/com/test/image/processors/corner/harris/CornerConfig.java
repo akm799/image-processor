@@ -1,4 +1,4 @@
-package com.test.image.processors.corner;
+package com.test.image.processors.corner.harris;
 
 /**
  * Configuration parameters for Harris edge detection. The image processed for corner detection

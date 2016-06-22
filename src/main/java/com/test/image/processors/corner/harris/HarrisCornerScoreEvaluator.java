@@ -1,4 +1,4 @@
-package com.test.image.processors.corner;
+package com.test.image.processors.corner.harris;
 
 import com.test.image.model.GradientProducts;
 import com.test.image.model.Gradients;

@@ -1,10 +1,8 @@
-package com.test.image.processors.corner;
+package com.test.image.processors.corner.harris;
 
 import com.test.image.AbstractFileImageProcessor;
 import com.test.image.ImageDataProcessor;
-import com.test.image.ImageProcessor;
 import com.test.image.model.GrayScaleImage;
-import com.test.image.processors.edge.EdgeImageDataProcessor;
 import com.test.image.util.GrayScaleImageHelper;
 
 import java.awt.image.BufferedImage;
