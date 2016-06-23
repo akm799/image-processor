@@ -4,7 +4,7 @@ import com.test.image.ImageDataProcessor;
 import com.test.image.model.Constants;
 import com.test.image.model.GrayScaleImage;
 import com.test.image.model.GrayScaleImageFactory;
-import org.junit.Assert;
+import com.test.image.model.GrayScaleImageTestHelper;
 import org.junit.Test;
 
 public class HysterisisTest {
@@ -38,13 +38,6 @@ public class HysterisisTest {
     private void testHysterisis(int[][] pixels, int[][] expected) {
         final GrayScaleImage input = GrayScaleImageFactory.instance(pixels);
         final GrayScaleImage output = underTest.processImage(input);
-        Assert.assertNotNull(output);
-        Assert.assertEquals(input.getWidth(), output.getWidth());
-        Assert.assertEquals(input.getHeight(), output.getHeight());
-        for (int j=0 ; j<input.getHeight() ; j++) {
-            for (int i=0 ; i<input.getWidth() ; i++) {
-                Assert.assertEquals(expected[j][i], output.getPixel(i, j));
-            }
-        }
+        GrayScaleImageTestHelper.assertPixels(expected, output);
     }
 }

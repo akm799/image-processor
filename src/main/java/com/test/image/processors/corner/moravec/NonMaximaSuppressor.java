@@ -4,7 +4,6 @@ import com.test.image.ImageDataProcessor;
 import com.test.image.model.Direction;
 import com.test.image.model.GrayScaleImage;
 
-//TODO Add unit tests
 public final class NonMaximaSuppressor implements ImageDataProcessor {
 
     @Override

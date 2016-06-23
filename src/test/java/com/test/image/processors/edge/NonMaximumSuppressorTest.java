@@ -1,7 +1,6 @@
 package com.test.image.processors.edge;
 
 import com.test.image.model.*;
-import org.junit.Assert;
 import org.junit.Test;
 
 
@@ -197,13 +196,6 @@ public class NonMaximumSuppressorTest {
         final Gradients gradients = GradientsFactory.instance(ImageMetaDataFactory.instance(magnitudes), ImageMetaDataFactory.instance(directions));
 
         final GrayScaleImage nonMaxSuppressed = underTest.processGradients(gradients);
-        Assert.assertNotNull(nonMaxSuppressed);
-        Assert.assertEquals(expected[0].length, nonMaxSuppressed.getWidth());
-        Assert.assertEquals(expected.length, nonMaxSuppressed.getHeight());
-        for (int j=0 ; j<nonMaxSuppressed.getHeight() ; j++) {
-            for (int i=0 ; i<nonMaxSuppressed.getWidth() ; i++) {
-                Assert.assertEquals(expected[j][i], nonMaxSuppressed.getPixel(i, j));
-            }
-        }
+        GrayScaleImageTestHelper.assertPixels(expected, nonMaxSuppressed);
     }
 }
