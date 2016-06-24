@@ -1,13 +1,14 @@
 package com.test.image.processors.corner.moravec;
 
+import com.test.image.ImageDataProcessor;
 import com.test.image.model.Direction;
 import com.test.image.model.GrayScaleImage;
 
-public final class MoravecCornerScoreEvaluator implements CornerScoreEvaluator {
+public final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
     private final CornerConfig config = new CornerConfig();
 
     @Override
-    public GrayScaleImage evaluateCornerScores(GrayScaleImage image) {
+    public GrayScaleImage processImage(GrayScaleImage image) {
         final GrayScaleImage output = new GrayScaleImage(image.getWidth(), image.getHeight());
         for (int j=0 ; j<image.getHeight() ; j++) {
             for (int i=0 ; i<image.getWidth() ; i++) {
@@ -25,14 +26,15 @@ public final class MoravecCornerScoreEvaluator implements CornerScoreEvaluator {
             sum += evaluateCornerScore(image, x, y, direction);
         }
 
-        return sum;
+        return Math.round(sum/(float)Direction.values().length);
     }
 
     private int evaluateCornerScore(GrayScaleImage image, int x, int y, Direction direction) {
         final int xTopLeft = x - config.windowRadius;
         final int yTopLeft = y - config.windowRadius;
-        final int xBottomRight = xTopLeft + 2*config.windowRadius + 1;
-        final int yBottomRight = yTopLeft + 2*config.windowRadius + 1;
+        final int side = 2*config.windowRadius + 1;
+        final int xBottomRight = xTopLeft + side;
+        final int yBottomRight = yTopLeft + side;
 
         final int xShift = direction.xOffset*config.windowShift;
         final int yShift = direction.yOffset*config.windowShift;
@@ -47,7 +49,7 @@ public final class MoravecCornerScoreEvaluator implements CornerScoreEvaluator {
             }
         }
 
-        return sum;
+        return Math.round(sum/(float)(side*side));
     }
 
     // If (x,y) falls outside the image boundaries, then mirror the pixel. This can happen for pixels
