@@ -21,7 +21,7 @@ public final class CornerImageDataProcessor implements ImageDataProcessor {
     }
 
     private ImageDataProcessor buildProcessor() {
-        final Collection<ImageDataProcessor> processors = new ArrayList<>(6);
+        final Collection<ImageDataProcessor> processors = new ArrayList<>(7);
 
         if (config.blurImage && !config.edgeProcess) {
             processors.add(new FilterImageDataProcessor(new GaussianImageFilter(config.blurRadius, config.blurSigma)));
@@ -31,6 +31,7 @@ public final class CornerImageDataProcessor implements ImageDataProcessor {
             processors.add(new EdgeImageDataProcessor());
         }
 
+        processors.add(new BinaryImageDataProcessor());
         processors.add(new MoravecCornerScoreEvaluator());
         processors.add(new NonMaximaSuppressor());
         processors.add(new Normalizer());
