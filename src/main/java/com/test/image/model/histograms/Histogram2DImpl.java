@@ -8,7 +8,9 @@ public final class Histogram2DImpl implements Histogram2D {
     private static final int INITIAL_CAPACITY = 128;
     private static final int CAPACITY_INCREMENT = 512;
 
+    private final double xMin;
     private final int nXBins;
+    private final double yMin;
     private final int nYBins;
 
     private final double dx;
@@ -17,7 +19,9 @@ public final class Histogram2DImpl implements Histogram2D {
 
     Histogram2DImpl(double xMin, double xMax, int nXBins, double yMin, double yMax, int nYBins) {
         checkArguments(xMin, xMax, nXBins, yMin, yMax, nYBins);
+        this.xMin = xMin;
         this.nXBins = nXBins;
+        this.yMin = yMin;
         this.nYBins = nYBins;
 
         this.dx = (xMax - xMin)/nXBins;
@@ -42,8 +46,8 @@ public final class Histogram2DImpl implements Histogram2D {
 
     @Override
     public void addEntry(double x, double y, int value) {
-        final int ix = (int)Math.floor(x/dx);
-        final int iy = (int)Math.floor(y/dy);
+        final int ix = (int)Math.floor((x - xMin)/dx);
+        final int iy = (int)Math.floor((y - yMin)/dy);
         if (entries[iy][ix] == null) {
             entries[iy][ix] = new IntArrayList(INITIAL_CAPACITY, CAPACITY_INCREMENT);
         }
@@ -92,8 +96,8 @@ public final class Histogram2DImpl implements Histogram2D {
         for (int iy=0 ; iy<nYBins ; iy++) {
             for (int ix=0 ; ix<nXBins ; ix++) {
                 if (entries[iy][ix] != null) {
-                    final double x = ix*dx + dxHalf;
-                    final double y = iy*dy + dyHalf;
+                    final double x = xMin + ix*dx + dxHalf;
+                    final double y = yMin + iy*dy + dyHalf;
                     bins[i++] = new Bin2DImpl(x, y, entries[iy][ix]);
                 }
             }
