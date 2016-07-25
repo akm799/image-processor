@@ -56,7 +56,7 @@ public class HoughTransformTest {
     @Test
     public void shouldFindPositiveObliqueLine() {
         setUpPositiveObliqueLine();
-        underTest = new BasicHoughTransform(2);
+        underTest = new BasicHoughTransform(10);
 
         final Histogram2D histogram = underTest.transform(image);
         Assert.assertNotNull(histogram);
