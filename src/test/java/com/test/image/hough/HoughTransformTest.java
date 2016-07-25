@@ -12,9 +12,14 @@ import org.junit.Test;
 public class HoughTransformTest {
     private final int width = 10;
     private final int height = 10;
-    private GrayScaleImage image = new GrayScaleImage(width, height);
 
+    private GrayScaleImage image;
     private HoughTransform underTest;
+
+    @Before
+    public void setUp() {
+        image = new GrayScaleImage(width, height);
+    }
 
     @Test
     public void shouldFindNegativeObliqueLine() {

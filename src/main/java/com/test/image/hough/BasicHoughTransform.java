@@ -8,7 +8,6 @@ public class BasicHoughTransform implements HoughTransform {
     private final int nThetaBins = 90;
     private final double thetaMin = 0;
     private final double thetaMax = Math.PI;
-    private final double[] theta = new double[nThetaBins];
     private final double[] sines = new double[nThetaBins];
     private final double[] cosines = new double[nThetaBins];
     private final double radiusMin = 0;
@@ -29,7 +28,6 @@ public class BasicHoughTransform implements HoughTransform {
         final double bw2 = bw/2;
         for (int i=0 ; i<nThetaBins ; i++) {
             final double t = thetaMin + i*bw + bw2;
-            theta[i] = t;
             sines[i] = Math.sin(t);
             cosines[i] = Math.cos(t);
         }
