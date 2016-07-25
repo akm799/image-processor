@@ -45,14 +45,13 @@ public final class Histogram2DImpl implements Histogram2D {
     }
 
     @Override
-    public void addEntry(double x, double y, int value) {
-        final int ix = (int)Math.floor((x - xMin)/dx);
-        final int iy = (int)Math.floor((y - yMin)/dy);
-        if (entries[iy][ix] == null) {
-            entries[iy][ix] = new IntArrayList(INITIAL_CAPACITY, CAPACITY_INCREMENT);
+    public void addEntry(int xBinIndex, double y, int value) {
+        final int yBinIndex = (int)Math.floor((y - yMin)/dy);
+        if (entries[yBinIndex][xBinIndex] == null) {
+            entries[yBinIndex][xBinIndex] = new IntArrayList(INITIAL_CAPACITY, CAPACITY_INCREMENT);
         }
 
-        entries[iy][ix].add(value);
+        entries[yBinIndex][xBinIndex].add(value);
     }
 
     @Override

@@ -8,9 +8,9 @@ public class Histogram2DTest {
     @Test
     public void shouldAddEntries() {
         final Histogram2D underTest = Histogram2DFactory.instance(0, 10, 10, 0, 5, 5);
-        underTest.addEntry(0.3, 2.7, 1);
-        underTest.addEntry(5.4, 1.6, 2);
-        underTest.addEntry(9.1, 4.4, 3);
+        underTest.addEntry(0, 2.7, 1);
+        underTest.addEntry(5, 1.6, 2);
+        underTest.addEntry(9, 4.4, 3);
 
         final Bin2D[] bins = underTest.getBins();
         Assert.assertNotNull(bins);
@@ -21,6 +21,18 @@ public class Histogram2DTest {
         assertBin(9.5, 4.5, 3, bins[2]);
     }
 
+    @Test
+    public void shouldAddEntriesInBinBoundary() {
+        final Histogram2D underTest = Histogram2DFactory.instance(0, 10, 10, 0, 5, 5);
+        underTest.addEntry(5, 2, 1);
+
+        final Bin2D[] bins = underTest.getBins();
+        Assert.assertNotNull(bins);
+        Assert.assertEquals(1, bins.length);
+
+        assertBin(5.5, 2.5, 1, bins[0]);
+    }
+
     private void assertBin(double x, double y, int value, Bin2D bin) {
         assertBin(x, y, new int[]{value}, bin);
     }
@@ -28,14 +40,14 @@ public class Histogram2DTest {
     @Test
     public void shouldFilterEntries() {
         final Histogram2D underTest = Histogram2DFactory.instance(0, 10, 10, 0, 5, 5);
-        underTest.addEntry(0.3, 2.7, 1);
-        underTest.addEntry(5.4, 1.6, 2);
-        underTest.addEntry(9.1, 4.4, 3);
-        underTest.addEntry(5.4, 1.6, 4);
-        underTest.addEntry(9.1, 4.4, 5);
-        underTest.addEntry(5.4, 1.6, 6);
-        underTest.addEntry(9.1, 4.4, 7);
-        underTest.addEntry(5.4, 1.6, 8);
+        underTest.addEntry(0, 2.7, 1);
+        underTest.addEntry(5, 1.6, 2);
+        underTest.addEntry(9, 4.4, 3);
+        underTest.addEntry(5, 1.6, 4);
+        underTest.addEntry(9, 4.4, 5);
+        underTest.addEntry(5, 1.6, 6);
+        underTest.addEntry(9, 4.4, 7);
+        underTest.addEntry(5, 1.6, 8);
 
         underTest.filter(3);
         final Bin2D[] bins = underTest.getBins();
