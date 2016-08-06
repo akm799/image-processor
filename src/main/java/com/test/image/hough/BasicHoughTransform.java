@@ -5,38 +5,22 @@ import com.test.image.model.histograms.Histogram2D;
 import com.test.image.model.histograms.Histogram2DFactory;
 
 public class BasicHoughTransform implements HoughTransform {
-    private final int nThetaBins = 90;
-    private final double thetaMin = 0;
-    private final double thetaMax = Math.PI;
-    private final double[] sines = new double[nThetaBins];
-    private final double[] cosines = new double[nThetaBins];
-    private final double radiusMin = 0;
-    private final int nRadiusBinsFactor = 1000;
+    private int nThetaBins;
+    private double thetaMin;
+    private double thetaMax;
+    private double[] sines;
+    private double[] cosines;
 
-    private final int threshold;
-
+    private double radiusMin;
     private double radiusMax;
     private int nRadiusBins;
 
-    public BasicHoughTransform(int threshold) {
-        this.threshold = threshold;
-        init();
-    }
-
-    private void init() {
-        final double bw = (thetaMax - thetaMin)/nThetaBins;
-        final double bw2 = bw/2;
-        for (int i=0 ; i<nThetaBins ; i++) {
-            final double t = thetaMin + i*bw + bw2;
-            sines[i] = Math.sin(t);
-            cosines[i] = Math.cos(t);
-        }
-    }
+    private int threshold;
 
     @Override
     public Histogram2D transform(GrayScaleImage image) {
-        radiusMax = computeMaxRadius(image);
-        nRadiusBins = nRadiusBinsFactor*(int)radiusMax;
+        configureLimits(image);
+
         final Histogram2D histogram = Histogram2DFactory.instance(thetaMin, thetaMax, nThetaBins, radiusMin, radiusMax, nRadiusBins);
         fillHistogram(image, histogram);
         histogram.filter(threshold);
@@ -44,11 +28,33 @@ public class BasicHoughTransform implements HoughTransform {
         return histogram;
     }
 
-    private double computeMaxRadius(GrayScaleImage image) {
-        final int w = image.getWidth();
-        final int h = image.getHeight();
+    private void configureLimits(GrayScaleImage image) {
+        final HoughTransformConfig config = new HoughTransformConfig(image.getWidth(), image.getHeight());
+        configureLimits(config);
+    }
 
-        return Math.ceil(Math.sqrt(w*w + h*h));
+    private void configureLimits(HoughTransformConfig config) {
+        thetaMin = config.thetaMin;
+        thetaMax = config.thetaMax;
+        nThetaBins = config.nThetaBins;
+        sines = new double[nThetaBins];
+        cosines = new double[nThetaBins];
+
+        radiusMin = config.radiusMin;
+        radiusMax = config.radiusMax;
+        nRadiusBins = config.nRadiusBins;
+
+        computeTrigValues();
+    }
+
+    private void computeTrigValues() {
+        final double bw = (thetaMax - thetaMin)/nThetaBins;
+        final double bw2 = bw/2;
+        for (int i=0 ; i<nThetaBins ; i++) {
+            final double t = thetaMin + i*bw + bw2;
+            sines[i] = Math.sin(t);
+            cosines[i] = Math.cos(t);
+        }
     }
 
     private void fillHistogram(GrayScaleImage image, Histogram2D histogram) {
@@ -71,5 +77,10 @@ public class BasicHoughTransform implements HoughTransform {
                 }
             }
         }
+    }
+
+    @Override
+    public void setThreshold(int threshold) {
+        this.threshold = threshold;
     }
 }
