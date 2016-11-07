@@ -46,4 +46,16 @@ public final class GrayScaleImage extends ImageDimensions {
     public void setPixel(int x, int y, int value) {
         pixels[y*width + x] = value;
     }
+
+    public int getPixelIndex(int x, int y) {
+        return (y*width + x);
+    }
+
+    public int getPixel(int index) {
+        return pixels[index];
+    }
+
+    public void setPixel(int index, int value) {
+        pixels[index] = value;
+    }
 }
