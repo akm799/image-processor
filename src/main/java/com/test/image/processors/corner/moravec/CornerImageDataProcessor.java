@@ -13,7 +13,7 @@ import java.util.Collection;
  * Look at "V. Moravec Corner Detection" inside the document at the link above.
  */
 public final class CornerImageDataProcessor implements ImageDataProcessor {
-    private final int lowSquareDiffSumValueThreshold = 9*25*25;
+    private final int lowSquareDiffSumValueThreshold = 9*3*3;
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage image) {
