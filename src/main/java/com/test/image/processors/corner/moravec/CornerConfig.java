@@ -14,12 +14,14 @@ public final class CornerConfig {
     /**
      * Moravec window radius. The resulting window will be NxN pixels where N = 2*windowRadius + 1
      */
+    @Deprecated
     public final int windowRadius = 5;
 
     /**
      * The amount of pixels which the Moravec window will be shifted by (to compute the square differences sum with
      * respect to the un-shifted window).
      */
+    @Deprecated
     public final int windowShift = 2*windowRadius + 1;
 
     /**

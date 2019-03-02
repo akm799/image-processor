@@ -5,7 +5,6 @@ import com.test.image.model.Direction;
 import com.test.image.model.GrayScaleImage;
 
 public final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
-    private final CornerConfig config = new CornerConfig();
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage image) {
@@ -21,52 +20,56 @@ public final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
     }
 
     private int evaluateCornerScore(GrayScaleImage image, int x, int y) {
-        int sum = 0;
+        int min = Integer.MAX_VALUE;
         for (Direction direction : Direction.values()) {
-            sum += evaluateCornerScore(image, x, y, direction);
+            final int score = evaluateCornerScore(image, x, y, direction);
+            if (score < min) {
+                min = score;
+            }
         }
 
-        return Math.round(sum/(float)Direction.values().length);
+        return min;
     }
 
     private int evaluateCornerScore(GrayScaleImage image, int x, int y, Direction direction) {
-        final int xTopLeft = x - config.windowRadius;
-        final int yTopLeft = y - config.windowRadius;
-        final int side = 2*config.windowRadius + 1;
-        final int xBottomRight = xTopLeft + side;
-        final int yBottomRight = yTopLeft + side;
+        final int xTopLeft = x - 1;
+        final int yTopLeft = y - 1;
+        final int xBottomRight = x + 1;
+        final int yBottomRight = y + 1;
 
-        final int xShift = direction.xOffset*config.windowShift;
-        final int yShift = direction.yOffset*config.windowShift;
+        final int xShift = direction.xOffset;
+        final int yShift = direction.yOffset;
 
         int sum = 0;
         for (int j=yTopLeft ; j<=yBottomRight ; j++) {
             for (int i=xTopLeft ; i<=xBottomRight ; i++) {
                 final int value = getValueSafe(image, i, j);
                 final int shiftedValue = getValueSafe(image, i + xShift, j + yShift);
-                final int diff = value - shiftedValue;
-                sum += diff*diff;
+                final int diff = shiftedValue - value;
+                sum += (diff * diff);
             }
         }
 
-        return Math.round(sum/(float)(side*side));
+        return sum;
     }
 
-    // If (x,y) falls outside the image boundaries, then mirror the pixel. This can happen for pixels
-    // near the image border, where part of the filter window will fall outside the image area.
+    // If (x,y) falls outside the image boundaries, then return the closest boundary pixel. This can
+    // happen for pixels near the image border, where part of the filter window will fall outside the
+    // image area.
     private int getValueSafe(GrayScaleImage input, int x, int y) {
-        if (x < 0) {
-            x = -x;
-        } else if (x >= input.getWidth()) {
-            x = 2*input.getWidth() - x - 1;
-        }
+        final int xSafe = getIndexSafe(x, input.getWidth());
+        final int ySafe = getIndexSafe(y, input.getHeight());
 
-        if (y < 0) {
-            y = -y;
-        } else if (y >= input.getHeight()) {
-            y = 2*input.getHeight() - y - 1;
-        }
+        return input.getPixel(xSafe, ySafe);
+    }
 
-        return input.getPixel(x, y);
+    private int getIndexSafe(int index, int maxExclusive) {
+        if (index < 0) {
+            return 0;
+        } else if (index >= maxExclusive) {
+            return maxExclusive - 1;
+        } else {
+            return index;
+        }
     }
 }
