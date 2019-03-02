@@ -4,15 +4,10 @@ import com.test.image.ImageDataProcessor;
 import com.test.image.model.Constants;
 import com.test.image.model.GrayScaleImage;
 
-@Deprecated
-public final class BinaryImageDataProcessor implements ImageDataProcessor {
+final class LowValueSuppressor implements ImageDataProcessor {
     private final int threshold;
 
-    public BinaryImageDataProcessor() {
-        this(0);
-    }
-
-    public BinaryImageDataProcessor(int threshold) {
+    LowValueSuppressor(int threshold) {
         this.threshold = threshold;
     }
 
@@ -21,8 +16,8 @@ public final class BinaryImageDataProcessor implements ImageDataProcessor {
         final GrayScaleImage output = new GrayScaleImage(image.getWidth(), image.getHeight());
         for (int j=0 ; j<image.getHeight() ; j++) {
             for (int i=0 ; i<image.getWidth() ; i++) {
-                if (image.getPixel(i, j) > threshold) {
-                    output.setPixel(i, j, Constants.MAX_INTENSITY);
+                if (image.getPixel(i, j) < threshold) {
+                    output.setPixel(i, j, 0);
                 }
             }
         }

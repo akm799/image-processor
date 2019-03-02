@@ -1,5 +1,6 @@
 package com.test.image.processors.corner.moravec;
 
+@Deprecated
 public final class CornerConfig {
     /**
      * Radius used for the Gaussian blur. Minimum is 1.

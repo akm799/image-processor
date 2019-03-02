@@ -4,6 +4,7 @@ import com.test.image.ImageDataProcessor;
 import com.test.image.model.Constants;
 import com.test.image.model.GrayScaleImage;
 
+@Deprecated
 public final class Normalizer implements ImageDataProcessor {
 
     @Override

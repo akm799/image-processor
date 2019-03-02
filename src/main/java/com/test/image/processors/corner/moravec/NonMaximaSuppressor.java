@@ -4,7 +4,9 @@ import com.test.image.ImageDataProcessor;
 import com.test.image.model.Direction;
 import com.test.image.model.GrayScaleImage;
 
-public final class NonMaximaSuppressor implements ImageDataProcessor {
+final class NonMaximaSuppressor implements ImageDataProcessor {
+
+    NonMaximaSuppressor() {}
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage image) {

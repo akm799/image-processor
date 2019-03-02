@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 
+@Deprecated
 public final class MoravecThresholdApplier implements ImageDataProcessor {
     private final CornerConfig config = new CornerConfig();
 

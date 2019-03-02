@@ -8,6 +8,7 @@ import com.test.image.model.GrayScaleImage;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public final class MoravecCornerScoreEvaluator2 implements ImageDataProcessor {
     private final CornerConfig config = new CornerConfig();
     private final Map<Direction, Integer> directionalScores = new HashMap<>(Direction.values().length);

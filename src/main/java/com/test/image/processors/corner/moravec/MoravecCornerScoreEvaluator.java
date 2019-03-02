@@ -4,7 +4,14 @@ import com.test.image.ImageDataProcessor;
 import com.test.image.model.Direction;
 import com.test.image.model.GrayScaleImage;
 
-public final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
+/**
+ * https://arxiv.org/pdf/1209.1558.pdf
+ *
+ * Look at "V. Moravec Corner Detection" inside the document at the link above.
+ */
+final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
+
+    MoravecCornerScoreEvaluator() {}
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage image) {
@@ -19,6 +26,8 @@ public final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
         return output;
     }
 
+    // Compute the square difference sum for all possible directions and
+    // then return the minimum value.
     private int evaluateCornerScore(GrayScaleImage image, int x, int y) {
         int min = Integer.MAX_VALUE;
         for (Direction direction : Direction.values()) {
@@ -31,6 +40,9 @@ public final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
         return min;
     }
 
+    // The sum of the squares of pixel intensity differences between pixels in a 3x3 window
+    // centred at the pixel (x, y) and the same window shifted by 1 pixel along the specified
+    // direction.
     private int evaluateCornerScore(GrayScaleImage image, int x, int y, Direction direction) {
         final int xTopLeft = x - 1;
         final int yTopLeft = y - 1;
