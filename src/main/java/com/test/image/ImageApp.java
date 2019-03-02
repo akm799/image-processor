@@ -22,10 +22,10 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getScaleDownImageProcessor();
+        return getCornerImageProcessor();
     }
 
-    private FileImageProcessor getCornerImageProcessor(String[] args) throws IOException {
+    private FileImageProcessor getCornerImageProcessor() throws IOException {
         return new CornerImageProcessor();
     }
 
