@@ -16,8 +16,11 @@ final class LowValueSuppressor implements ImageDataProcessor {
         final GrayScaleImage output = new GrayScaleImage(image.getWidth(), image.getHeight());
         for (int j=0 ; j<image.getHeight() ; j++) {
             for (int i=0 ; i<image.getWidth() ; i++) {
-                if (image.getPixel(i, j) < threshold) {
+                final int value = image.getPixel(i, j);
+                if (value < threshold) {
                     output.setPixel(i, j, 0);
+                } else {
+                    output.setPixel(i, j, value);
                 }
             }
         }
