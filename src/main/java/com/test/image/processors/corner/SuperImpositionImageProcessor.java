@@ -1,7 +1,9 @@
 package com.test.image.processors.corner;
 
 import com.test.image.ImageProcessor;
+import com.test.image.model.Constants;
 import com.test.image.model.GrayScaleImage;
+import com.test.image.util.ColourHelper;
 
 import java.awt.image.BufferedImage;
 
@@ -9,12 +11,10 @@ import java.awt.image.BufferedImage;
  * Created by Thanos Mavroidis on 02/03/2019.
  */
 final class SuperImpositionImageProcessor implements ImageProcessor {
-    private final int superImpositionColour;
     private final GrayScaleImage selectedPixels;
 
-    SuperImpositionImageProcessor(GrayScaleImage selectedPixels, int superImpositionColour) {
+    SuperImpositionImageProcessor(GrayScaleImage selectedPixels) {
         this.selectedPixels = selectedPixels;
-        this.superImpositionColour = superImpositionColour;
     }
 
     @Override
@@ -41,12 +41,22 @@ final class SuperImpositionImageProcessor implements ImageProcessor {
     private void superImposePixels(BufferedImage image, BufferedImage output) {
         for (int j=0 ; j<image.getHeight() ; j++) {
             for (int i=0 ; i<image.getWidth() ; i++) {
-                if (selectedPixels.getPixel(i, j) > 0) {
-                    output.setRGB(i, j, superImpositionColour);
+                final int normalizedCornerValue = selectedPixels.getPixel(i, j);
+                if (normalizedCornerValue > 0) {
+                    output.setRGB(i, j, colourForNormalizedValue(normalizedCornerValue));
                 } else {
                     output.setRGB(i, j, image.getRGB(i, j));
                 }
             }
         }
+    }
+
+    // Blue to red (cold-hot) colour: min=blue to max=red
+    private int colourForNormalizedValue(int normalizedValue) {
+        final int red = normalizedValue;
+        final int green = 0;
+        final int blue = Constants.MAX_INTENSITY - normalizedValue;
+
+        return ColourHelper.getRgb(red, green, blue);
     }
 }

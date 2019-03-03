@@ -40,6 +40,17 @@ final class MoravecCornerScoreEvaluator implements ImageDataProcessor {
         return min;
     }
 
+    // Compute the square difference sum for all possible directions and
+    // then return the sum.
+    private int evaluateCornerScoreAlt(GrayScaleImage image, int x, int y) {
+        int sum = 0;
+        for (Direction direction : Direction.values()) {
+            sum += evaluateCornerScore(image, x, y, direction);
+        }
+
+        return sum;
+    }
+
     // The sum of the squares of pixel intensity differences between pixels in a 3x3 window
     // centred at the pixel (x, y) and the same window shifted by 1 pixel along the specified
     // direction.
