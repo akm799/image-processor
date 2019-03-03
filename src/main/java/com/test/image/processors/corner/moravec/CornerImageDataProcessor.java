@@ -29,8 +29,8 @@ public final class CornerImageDataProcessor implements ImageDataProcessor {
     private ImageDataProcessor buildProcessor() {
         final Collection<ImageDataProcessor> processors = new ArrayList<>(3);
         processors.add(new MoravecCornerScoreEvaluator());
-        processors.add(new LowValueSuppressor(lowSquareDiffSumValueThreshold));
         processors.add(new NonMaximaSuppressor());
+        processors.add(new LowValueSuppressor(lowSquareDiffSumValueThreshold));
         processors.add(new Normalizer());
 
         return new ChainImageDataProcessor(processors);
