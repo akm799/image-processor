@@ -8,6 +8,11 @@ import com.test.image.util.ColourHelper;
 import java.awt.image.BufferedImage;
 
 /**
+ * Produces an output image which is a copy of the input image with pixels from the constructor-input
+ * gray scale image data superimposed. Each pixel in the constructor-input image will result in a
+ * (superimposed) pixel with a colour ranging from red to blue proportional to the intensity of the
+ * gray scale constructor-input image.
+ *
  * Created by Thanos Mavroidis on 02/03/2019.
  */
 final class SuperImpositionImageProcessor implements ImageProcessor {
@@ -26,7 +31,7 @@ final class SuperImpositionImageProcessor implements ImageProcessor {
     public BufferedImage processImage(BufferedImage image) {
         checkDimensions(image);
 
-        final BufferedImage output = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
+        final BufferedImage output = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
         superImposePixels(image, output);
 
         return output;
