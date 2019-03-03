@@ -19,7 +19,7 @@ final class SuperImpositionImageProcessor implements ImageProcessor {
     private final GrayScaleImage selectedPixels;
 
     SuperImpositionImageProcessor(GrayScaleImage selectedPixels) {
-        this.selectedPixels = selectedPixels;
+        this.selectedPixels = (new Normalizer()).processImage(selectedPixels); // Normalize the data in the input image.
     }
 
     @Override

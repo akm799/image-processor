@@ -1,9 +1,14 @@
-package com.test.image.processors.corner.moravec;
+package com.test.image.processors.corner;
 
 import com.test.image.ImageDataProcessor;
 import com.test.image.model.Constants;
 import com.test.image.model.GrayScaleImage;
 
+/**
+ * Normalizes all values in the input gray scale image, excluding zeroes, to values between 0 and 255.
+ *
+ * Created by Thanos Mavroidis on 03/03/2019.
+ */
 final class Normalizer implements ImageDataProcessor {
     private static final int MIN_INDEX = 0;
     private static final int MAX_INDEX = 1;

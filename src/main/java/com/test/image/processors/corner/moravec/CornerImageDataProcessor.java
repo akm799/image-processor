@@ -11,6 +11,8 @@ import java.util.Collection;
  * https://arxiv.org/pdf/1209.1558.pdf
  *
  * Look at "V. Moravec Corner Detection" inside the document at the link above.
+ *
+ * Created by Thanos Mavroidis on 02/03/2019.
  */
 public final class CornerImageDataProcessor implements ImageDataProcessor {
     private static final int MORAVEC_WINDOW_SIZE = 9;
@@ -31,7 +33,6 @@ public final class CornerImageDataProcessor implements ImageDataProcessor {
         processors.add(new MoravecCornerScoreEvaluator());
         processors.add(new NonMaximaSuppressor());
         processors.add(new LowValueSuppressor(lowSquareDiffSumValueThreshold));
-        processors.add(new Normalizer());
 
         return new ChainImageDataProcessor(processors);
     }
