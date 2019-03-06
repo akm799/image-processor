@@ -10,6 +10,7 @@ import com.test.image.processors.gray.GrayScaleImageProcessor;
 import com.test.image.processors.padding.AddPaddingImageProcessor;
 import com.test.image.processors.padding.PaddingFactors;
 import com.test.image.processors.scale.ScaleDownProcessor;
+import com.test.image.processors.sharp.UsmImageProcessor;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -23,7 +24,11 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getCornerImageProcessor();
+        return getSharpImageProcessor();
+    }
+
+    private FileImageProcessor getSharpImageProcessor() throws IOException {
+        return new UsmImageProcessor();
     }
 
     private FileImageProcessor getCornerImageProcessor() throws IOException {

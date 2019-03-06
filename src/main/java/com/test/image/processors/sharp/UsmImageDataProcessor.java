@@ -14,11 +14,13 @@ import com.test.image.processors.scale.IntensityScaleImageDataProcessor;
  *
  * Created by Thanos Mavroidis on 06/03/2019.
  */
-public final class UsmImageDataProcessor implements ImageDataProcessor {
+final class UsmImageDataProcessor implements ImageDataProcessor {
     private final ImageDataProcessor blur = new FilterImageDataProcessor(new GaussianImageFilter(1, 3.0f));
     private final IntensityScaleImageDataProcessor scale = new IntensityScaleImageDataProcessor(0.5f);
     private final CombinationImageDataProcessor add = new AddImageDataProcessor();
     private final CombinationImageDataProcessor subtract = new SubtractImageDataProcessor();
+
+    UsmImageDataProcessor() {}
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage original) {
