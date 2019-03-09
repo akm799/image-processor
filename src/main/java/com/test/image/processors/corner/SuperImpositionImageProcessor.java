@@ -3,6 +3,7 @@ package com.test.image.processors.corner;
 import com.test.image.ImageProcessor;
 import com.test.image.model.Constants;
 import com.test.image.model.GrayScaleImage;
+import com.test.image.processors.scale.Normalizer;
 import com.test.image.util.ColourHelper;
 
 import java.awt.image.BufferedImage;
@@ -19,7 +20,12 @@ final class SuperImpositionImageProcessor implements ImageProcessor {
     private final GrayScaleImage selectedPixels;
 
     SuperImpositionImageProcessor(GrayScaleImage selectedPixels) {
-        this.selectedPixels = (new Normalizer()).processImage(selectedPixels); // Normalize the data in the input image.
+        this.selectedPixels = normalizeExcludingZeroes(selectedPixels);
+    }
+
+    // Normalize the data in the input image but exclude zeros, i.e. pixels rejected by the threshold filter.
+    private GrayScaleImage normalizeExcludingZeroes(GrayScaleImage image) {
+        return (new Normalizer(true)).processImage(image);
     }
 
     @Override
