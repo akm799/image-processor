@@ -11,6 +11,7 @@ import com.test.image.processors.padding.AddPaddingImageProcessor;
 import com.test.image.processors.padding.PaddingFactors;
 import com.test.image.processors.scale.ScaleDownProcessor;
 import com.test.image.processors.sharp.UsmImageProcessor;
+import com.test.image.processors.var.VariationsImageProcessor;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -24,7 +25,11 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getSharpImageProcessor();
+        return getVariationsImageProcessor();
+    }
+
+    private FileImageProcessor getVariationsImageProcessor() throws IOException {
+        return new VariationsImageProcessor();
     }
 
     private FileImageProcessor getSharpImageProcessor() throws IOException {
