@@ -2,15 +2,25 @@ package com.test.image.filter;
 
 import com.test.image.ImageDataProcessor;
 import com.test.image.model.GrayScaleImage;
+import com.test.image.util.edge.EdgeHandler;
+import com.test.image.util.edge.EdgeHandlerFactory;
 
-
+/**
+ * https://en.wikipedia.org/wiki/Kernel_(image_processing)#Convolution
+ */
 public final class FilterImageDataProcessor implements ImageDataProcessor {
-    private final ImageFilter imageFilter;
     private final int radius;
+    private final ImageFilter imageFilter;
+    private final EdgeHandler edgeHandler;
 
     public FilterImageDataProcessor(ImageFilter imageFilter) {
+        this(imageFilter, EdgeHandlerFactory.mirrorInstance());
+    }
+
+    public FilterImageDataProcessor(ImageFilter imageFilter, EdgeHandler edgeHandler) {
         this.imageFilter = imageFilter;
         this.radius = imageFilter.getRadius();
+        this.edgeHandler = edgeHandler;
     }
 
     @Override
@@ -30,6 +40,7 @@ public final class FilterImageDataProcessor implements ImageDataProcessor {
         }
     }
 
+    //TODO Investigate of we need to flip all rows and columns of the filter before applying it.
     private int applyFilterToPixel(GrayScaleImage image, int xp, int yp) {
         final int x0 = xp - radius;
         final int y0 = yp - radius;
@@ -42,29 +53,11 @@ public final class FilterImageDataProcessor implements ImageDataProcessor {
             for (int x=x0 ; x<=xMax ; x++) {
                 final int xOffset = x - xp;
                 final float weight = imageFilter.getValue(xOffset, yOffset);
-                final int value = getValueSafe(image, x, y);
+                final int value = edgeHandler.getPixelValueSafe(image, x, y);
                 sum += weight*value;
             }
         }
 
-        return Math.round(sum);
-    }
-
-    // If (x,y) falls outside the image boundaries, then mirror the pixel. This can happen for pixels
-    // near the image border, where part of the filter window will fall outside the image area.
-    private int getValueSafe(GrayScaleImage image, int x, int y) {
-        if (x < 0) {
-            x = -x;
-        } else if (x >= image.getWidth()) {
-            x = 2*image.getWidth() - x - 1;
-        }
-
-        if (y < 0) {
-            y = -y;
-        } else if (y >= image.getHeight()) {
-            y = 2*image.getHeight() - y - 1;
-        }
-
-        return image.getPixel(x, y);
+        return Math.round(sum); //TODO Investigate if 'return Math.round(sum/((2*radius+1)*(2*radius+1)));' is a better option.
     }
 }
