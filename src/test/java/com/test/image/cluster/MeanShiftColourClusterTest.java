@@ -43,14 +43,15 @@ public final class MeanShiftColourClusterTest {
         Assert.assertTrue(!clusterPoints.isEmpty());
     }
 
-    private Collection<Integer> generatePointsInCluster(int centre, double radius, int n) {
+    private Collection<Integer> generatePointsInCluster(int centre, double maxRadius, int n) {
         final int r = ColourHelper.getRed(centre);
         final int g = ColourHelper.getGreen(centre);
         final int b = ColourHelper.getBlue(centre);
-        checkArguments(r, g, b, radius);
+        checkArguments(r, g, b, maxRadius);
 
         final Collection<Integer> points = new ArrayList<>(n);
         for (int i=0 ; i<n ; i++) {
+            final double radius = maxRadius*random.nextDouble();
             points.add(generatePointInCluster(r, g, b, radius));
         }
 
