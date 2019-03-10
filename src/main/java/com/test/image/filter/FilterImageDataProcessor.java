@@ -58,6 +58,6 @@ public final class FilterImageDataProcessor implements ImageDataProcessor {
             }
         }
 
-        return Math.round(sum); //TODO Investigate if 'return Math.round(sum/((2*radius+1)*(2*radius+1)));' is a better option.
+        return Math.round(sum);
     }
 }
