@@ -12,7 +12,11 @@ public final class IntArrayList implements IntList {
     private int[] values;
 
     public IntArrayList() {
-        this(DEFAULT_INITIAL_CAPACITY, DEFAULT_CAPACITY_INCREMENT);
+        this(DEFAULT_INITIAL_CAPACITY);
+    }
+
+    public IntArrayList(int initialCapacity) {
+        this(initialCapacity, DEFAULT_CAPACITY_INCREMENT);
     }
 
     public IntArrayList(int initialCapacity, int capacityIncrement) {
@@ -20,6 +24,15 @@ public final class IntArrayList implements IntList {
 
         this.values = new int[initialCapacity];
         this.capacityIncrement = capacityIncrement;
+    }
+
+    public IntArrayList(IntCollection intCollection) {
+        this(intCollection.size());
+
+        final IntIterator iterator = intCollection.iterator();
+        while (iterator.hasNext()) {
+            add(iterator.next());
+        }
     }
 
     private void checkArguments(int initialCapacity, int capacityIncrement) {
@@ -36,6 +49,18 @@ public final class IntArrayList implements IntList {
     public void add(int value) {
         ensureCapacity();
         values[size++] = value;
+    }
+
+    @Override
+    public void addAll(IntCollection intCollection) {
+        if (intCollection != null) {
+            final IntIterator iterator = intCollection.iterator();
+            if (iterator != null) {
+                while (iterator.hasNext()) {
+                    add(iterator.next());
+                }
+            }
+        }
     }
 
     @Override

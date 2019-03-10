@@ -1,12 +1,6 @@
 package com.test.image.model.collections;
 
-public interface IntList {
-
-    void add(int value);
-
-    void clear();
-
-    boolean contains(int value);
+public interface IntList extends IntCollection {
 
     int get(int index);
 
@@ -14,13 +8,7 @@ public interface IntList {
 
     int lastIndexOf(int value);
 
-    boolean isEmpty();
-
-    IntIterator iterator();
-
     void set(int index, int value);
-
-    int size();
 
     int[] toArray();
 }
