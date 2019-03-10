@@ -16,13 +16,29 @@ import com.test.image.processors.scale.IntensityScaleImageDataProcessor;
  * 
  * Created by Thanos Mavroidis on 06/03/2019.
  */
-final class UsmImageDataProcessor implements ImageDataProcessor {
-    private final ImageDataProcessor blur = new FilterImageDataProcessor(new GaussianImageFilter(5, 9.0f));
-    private final IntensityScaleImageDataProcessor scale = new IntensityScaleImageDataProcessor(0.7f);
+public final class UsmImageDataProcessor implements ImageDataProcessor {
+    private static final float DEFAULT_SCALE_FACTOR = 0.7f;
+    private static final int DEFAULT_RADIUS = 5;
+    private static final float DEFAULT_SIGMA = 9f;
+
     private final CombinationImageDataProcessor add = new AddImageDataProcessor();
     private final CombinationImageDataProcessor subtract = new SubtractImageDataProcessor();
 
-    UsmImageDataProcessor() {}
+    private final ImageDataProcessor blur;
+    private final IntensityScaleImageDataProcessor scale;
+
+    public UsmImageDataProcessor() {
+        this(DEFAULT_SCALE_FACTOR);
+    }
+
+    public UsmImageDataProcessor(float scaleFactor) {
+        this(scaleFactor, DEFAULT_RADIUS, DEFAULT_SIGMA);
+    }
+
+    public UsmImageDataProcessor(float scaleFactor, int radius, float sigma) {
+        blur = new FilterImageDataProcessor(new GaussianImageFilter(radius, sigma));
+        scale = new IntensityScaleImageDataProcessor(scaleFactor);
+    }
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage original) {

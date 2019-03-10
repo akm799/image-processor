@@ -9,10 +9,8 @@ import com.test.image.util.edge.EdgeHandlerFactory;
 /**
  * Created by Thanos Mavroidis on 09/03/2019.
  */
-final class VariationsImageDataProcessor implements ImageDataProcessor {
+public final class VariationsImageDataProcessor implements ImageDataProcessor {
     private final EdgeHandler edgeHandler = EdgeHandlerFactory.extendInstance();
-
-    VariationsImageDataProcessor() {}
 
     @Override
     public GrayScaleImage processImage(GrayScaleImage image) {
