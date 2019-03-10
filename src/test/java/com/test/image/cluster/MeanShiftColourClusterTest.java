@@ -18,29 +18,38 @@ public final class MeanShiftColourClusterTest {
 
     @Test
     public void shouldFindCluster() {
-        final int radius1 = 10;
-        final int centre1 = ColourHelper.getRgb(127, 127, 127);
-        final Collection<Integer> cluster1 = generatePointsInCluster(centre1, radius1, 1000);
-        Assert.assertEquals(1000, cluster1.size());
+        final int smallClusterRadius = 10;
+        final int smallClusterCentre = ColourHelper.getRgb(127, 127, 127);
+        final Collection<Integer> smallCluster = generatePointsInCluster(smallClusterCentre, smallClusterRadius, 1000);
+        Assert.assertEquals(1000, smallCluster.size());
 
-        final int radius2 = 10;
-        final int centre2 = ColourHelper.getRgb(127 + radius1 + radius2 + 2, 127, 127);
-        final Collection<Integer> cluster2 = generatePointsInCluster(centre2, radius2, 10000);
-        Assert.assertEquals(10000, cluster2.size());
+        final int largeClusterRadius = 10;
+        final int largeClusterCentre = ColourHelper.getRgb(127 + smallClusterRadius + largeClusterRadius + 2, 127, 127);
+        final Collection<Integer> largeCluster = generatePointsInCluster(largeClusterCentre, largeClusterRadius, 10000);
+        Assert.assertEquals(10000, largeCluster.size());
 
-        assertNoCommonElements(cluster1, cluster2);
+        assertNoCommonElements(smallCluster, largeCluster);
 
-        final Collection<Integer> allPoints = new ArrayList(cluster1.size() + cluster2.size());
-        allPoints.addAll(cluster1);
-        allPoints.addAll(cluster2);
+        final Collection<Integer> allPoints = new ArrayList(smallCluster.size() + largeCluster.size());
+        allPoints.addAll(smallCluster);
+        allPoints.addAll(largeCluster);
 
+        // Define a cluster window centred exactly between the 2 test clusters defined above.
         final int radius = 10;
-        final int centre = ColourHelper.getRgb(127 + radius1 + 1, 127, 127);
+        final int centre = ColourHelper.getRgb(127 + smallClusterRadius + 1, 127, 127);
         final MeanShiftColourCluster underTest = new MeanShiftColourCluster(centre, radius, allPoints);
 
         underTest.cluster(1000);
         final Collection<Integer> clusterPoints = underTest.getPointsInCluster();
+
         Assert.assertTrue(!clusterPoints.isEmpty());
+
+        // The cluster finder should converge towards the large cluster (since it is the larger).
+        final double fraction = (double)clusterPoints.size()/largeCluster.size();
+        Assert.assertTrue(fraction > 0.998);
+
+        final int commonCount = countNoCommonElements(largeCluster, clusterPoints);
+        Assert.assertEquals(clusterPoints.size(), commonCount);
     }
 
     private Collection<Integer> generatePointsInCluster(int centre, double maxRadius, int n) {
@@ -49,9 +58,16 @@ public final class MeanShiftColourClusterTest {
         final int b = ColourHelper.getBlue(centre);
         checkArguments(r, g, b, maxRadius);
 
+        final RandomDistribution oneMinusXDist = new RandomDistribution(0, maxRadius) {
+            @Override
+            double distribution(double x) {
+                return 1 - x;
+            }
+        };
+
         final Collection<Integer> points = new ArrayList<>(n);
         for (int i=0 ; i<n ; i++) {
-            final double radius = maxRadius*random.nextDouble();
+            final double radius = oneMinusXDist.nextInDist();
             points.add(generatePointInCluster(r, g, b, radius));
         }
 
@@ -98,5 +114,19 @@ public final class MeanShiftColourClusterTest {
                 Assert.assertFalse(p1 == p2);
             }
         }
+    }
+
+    private int countNoCommonElements(Collection<Integer> cluster1, Collection<Integer> cluster2) {
+        int count = 0;
+        for (int p1 : cluster1) {
+            for (int p2 : cluster2) {
+                if (p1 == p2) {
+                    count++;
+                    break;
+                }
+            }
+        }
+
+        return count;
     }
 }
