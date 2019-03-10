@@ -168,4 +168,28 @@ public class IntArrayListTest {
             Assert.assertEquals("Index " + index + " out of bounds: [0, " + values.length + ").", iobe.getMessage());
         }
     }
+
+    @Test
+    public void testAdd() {
+        underTest.add(42);
+        Assert.assertEquals(1, underTest.size());
+        Assert.assertEquals(42, underTest.get(0));
+    }
+
+    @Test
+    public void testAddAll() {
+        final IntCollection intCollection = new IntArrayList(3);
+        intCollection.add(3);
+        intCollection.add(2);
+        intCollection.add(1);
+
+        underTest.addAll(intCollection);
+        Assert.assertEquals(3, underTest.size());
+        final IntIterator expected = intCollection.iterator();
+        final IntIterator actual = underTest.iterator();
+        while (expected.hasNext()) {
+            Assert.assertTrue(actual.hasNext());
+            Assert.assertEquals(expected.next(), actual.next());
+        }
+    }
 }
