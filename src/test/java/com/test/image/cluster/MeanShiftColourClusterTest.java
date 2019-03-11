@@ -37,7 +37,7 @@ public final class MeanShiftColourClusterTest {
         // Define a cluster window centred exactly between the 2 test clusters defined above.
         final int radius = 10;
         final int centre = ColourHelper.getRgb(127 + smallClusterRadius + 1, 127, 127);
-        final MeanShiftColourCluster underTest = new MeanShiftColourCluster(centre, radius, allPoints);
+        final MeanShiftColourCluster underTest = new MeanShiftColourCluster(new ColourRangeData(centre, radius), allPoints);
 
         underTest.cluster(1000);
         final Collection<Integer> clusterPoints = underTest.getPointsInCluster();

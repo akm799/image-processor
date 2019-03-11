@@ -11,15 +11,15 @@ import com.test.image.util.ColourHelper;
  *
  * Created by Thanos Mavroidis on 10/03/2019.
  */
-public final class MeanShiftColourClusterAlt {
+public final class MeanShiftColourClusterAlt implements ColourRange {
     private int centre;
     private final double radius;
     private IntCollection allPoints;
     private IntCollection pointsInCluster;
 
-    public MeanShiftColourClusterAlt(int centre, double radius, IntCollection points) {
-        this.centre = centre;
-        this.radius = radius;
+    public MeanShiftColourClusterAlt(ColourRange colourRange, IntCollection points) {
+        this.centre = colourRange.getRgb();
+        this.radius = colourRange.getRadius();
         this.allPoints = new IntArrayList(points);
         this.pointsInCluster = new IntArrayList(points.size());
 
@@ -98,5 +98,15 @@ public final class MeanShiftColourClusterAlt {
 
     public IntCollection getPointsInCluster() {
         return pointsInCluster;
+    }
+
+    @Override
+    public int getRgb() {
+        return centre;
+    }
+
+    @Override
+    public double getRadius() {
+        return radius;
     }
 }

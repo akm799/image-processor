@@ -8,15 +8,15 @@ import java.util.Collection;
 /**
  * Created by Thanos Mavroidis on 09/03/2019.
  */
-public final class MeanShiftColourCluster {
+public final class MeanShiftColourCluster implements ColourRange {
     private int centre;
     private final double radius;
     private Collection<Integer> allPoints;
     private Collection<Integer> pointsInCluster;
 
-    public MeanShiftColourCluster(int centre, double radius, Collection<Integer> points) {
-        this.centre = centre;
-        this.radius = radius;
+    public MeanShiftColourCluster(ColourRange colourRange, Collection<Integer> points) {
+        this.centre = colourRange.getRgb();
+        this.radius = colourRange.getRadius();
         this.allPoints = new ArrayList<>(points);
         this.pointsInCluster = new ArrayList<>(points.size());
 
@@ -90,5 +90,15 @@ public final class MeanShiftColourCluster {
 
     public Collection<Integer> getPointsInCluster() {
         return pointsInCluster;
+    }
+
+    @Override
+    public int getRgb() {
+        return centre;
+    }
+
+    @Override
+    public double getRadius() {
+        return radius;
     }
 }
