@@ -1,6 +1,7 @@
 package com.test.image.model.collections;
 
 public interface IntCollection {
+    IntCollection EMPTY = new EmptyIntCollection();
 
     void add(int value);
 
