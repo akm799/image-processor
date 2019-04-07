@@ -49,7 +49,7 @@ public final class MutableColourCubeHistogramImpl implements MutableColourCubeHi
     }
 
     @Override
-    public int binScore(int binIndex) {
+    public int binSize(int binIndex) {
         if (bins[binIndex] == null) {
             return 0;
         } else {

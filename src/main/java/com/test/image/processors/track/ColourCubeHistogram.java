@@ -7,6 +7,7 @@ import com.test.image.model.collections.IntCollection;
  * Created by Thanos Mavroidis on 07/04/2019.
  */
 public interface ColourCubeHistogram {
+    int NO_SCORE = -1;
 
     int imageWidth();
 
@@ -14,7 +15,7 @@ public interface ColourCubeHistogram {
 
     int divisionsInSide();
 
-    int binScore(int binIndex);
+    int binSize(int binIndex);
 
     IntCollection binPoints(int binIndex);
 }
