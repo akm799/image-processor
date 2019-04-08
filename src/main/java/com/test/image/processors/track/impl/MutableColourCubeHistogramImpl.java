@@ -49,6 +49,16 @@ public final class MutableColourCubeHistogramImpl implements MutableColourCubeHi
     }
 
     @Override
+    public int nPoints() {
+        int nPoints = 0;
+        for (int i=0 ; i<nBins ; i++) {
+            nPoints += binSize(i);
+        }
+
+        return nPoints;
+    }
+
+    @Override
     public int binSize(int binIndex) {
         if (bins[binIndex] == null) {
             return 0;

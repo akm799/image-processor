@@ -71,7 +71,10 @@ public class ColourCubeHistogramTest {
         Assert.assertEquals(2, underTest.binSize(binIndex7));
         assertBin(underTest.binPoints(binIndex7), 10, 11);
 
-        // Check that all other bins ae empty.
+        // Check that all points we added are counted.
+        Assert.assertEquals(12, underTest.nPoints());
+
+        // Check that all other bins are empty.
         final Set<Integer> populatedBinIndexes = new HashSet(Arrays.asList(binIndex1, binIndex2, binIndex3, binIndex4, binIndex5, binIndex6, binIndex7));
         for (int i= 0 ; i<nBins ; i++) {
             if (!populatedBinIndexes.contains(i)) {

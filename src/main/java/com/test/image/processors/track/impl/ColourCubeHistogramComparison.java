@@ -85,6 +85,25 @@ public final class ColourCubeHistogramComparison implements ColourCubeHistogram 
     }
 
     /**
+     * Returns the sum of all histogram bin sizes which do not have a
+     * value of #ColourCubeHistogram.NO_SCORE.
+     *
+     * @return the sum of all histogram bin sizes which do not have a
+     * value of #ColourCubeHistogram.NO_SCORE
+     */
+    @Override
+    public int nPoints() {
+        int totalScore = 0;
+        for (int score : scores) {
+            if (score != NO_SCORE) {
+                totalScore += score;
+            }
+        }
+
+        return totalScore;
+    }
+
+    /**
      * Returns the difference between the sizes of the corresponding bins
      * in the two histograms being compared or #ColourCubeHistogram.NO_SCORE
      * if both bins are empty.
