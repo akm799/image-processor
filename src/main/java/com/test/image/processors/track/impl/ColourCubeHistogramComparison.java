@@ -103,6 +103,11 @@ public final class ColourCubeHistogramComparison implements ColourCubeHistogram 
         return totalScore;
     }
 
+    @Override
+    public int nBins() {
+        return nSideDivs*nSideDivs*nSideDivs;
+    }
+
     /**
      * Returns the difference between the sizes of the corresponding bins
      * in the two histograms being compared or #ColourCubeHistogram.NO_SCORE

@@ -34,6 +34,10 @@ public class ColourCubeHistogramComparisonTest {
 
         final ColourCubeHistogram underTest = new ColourCubeHistogramComparison(firstHistogram, secondHistogram);
 
+        Assert.assertEquals(firstHistogram.nBins(), secondHistogram.nBins());
+        Assert.assertEquals(firstHistogram.nBins(), underTest.nBins());
+        Assert.assertEquals(secondHistogram.nBins(), underTest.nBins());
+
         Assert.assertEquals(firstHistogram.imageWidth(), underTest.imageWidth());
         Assert.assertEquals(secondHistogram.imageWidth(), underTest.imageWidth());
         Assert.assertEquals(firstHistogram.imageHeight(), underTest.imageHeight());

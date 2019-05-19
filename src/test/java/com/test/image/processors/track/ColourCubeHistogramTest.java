@@ -30,6 +30,11 @@ public class ColourCubeHistogramTest {
     }
 
     @Test
+    public void shouldReturnBinSize() {
+        Assert.assertEquals(nBins, underTest.nBins());
+    }
+
+    @Test
     public void shouldCountColours() {
         final int binIndex1 = 0;
         add(0, 0, 0, 0, underTest);

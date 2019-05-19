@@ -17,6 +17,8 @@ public interface ColourCubeHistogram {
 
     int nPoints();
 
+    int nBins();
+
     int binSize(int binIndex);
 
     IntCollection binPoints(int binIndex);
