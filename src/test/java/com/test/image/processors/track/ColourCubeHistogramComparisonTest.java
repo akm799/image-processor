@@ -20,8 +20,6 @@ public class ColourCubeHistogramComparisonTest {
     private final int width = 100;
     private final int height = 100;
 
-    private MutableColourCubeHistogram underTest;
-
     @Test
     public void shouldCompareHistograms() {
         final MutableColourCubeHistogram firstHistogram = new MutableColourCubeHistogramImpl(width, height, nDivsInSide);
