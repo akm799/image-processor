@@ -50,13 +50,13 @@ public class ColourCubeHistogramComparisonTest {
         Assert.assertEquals(0, underTest.binSize(binIndexes[2]));
         Assert.assertEquals(0, underTest.binSize(binIndexes[3]));
         Assert.assertEquals(0, underTest.binSize(binIndexes[4]));
-        Assert.assertEquals(1, underTest.binSize(binIndexes[5])); // First 1, Second 0, Diff 1
+        Assert.assertEquals(ColourCubeHistogram.NO_SCORE, underTest.binSize(binIndexes[5])); // First 1, Second 0, Diff NO_SCORE because the second is 0.
         Assert.assertEquals(1, underTest.binSize(binIndexes[6])); // First 2, Second 3, Diff 1
 
-        final int sumOfAllPopulatedBins = 4;
-        Assert.assertEquals(sumOfAllPopulatedBins, underTest.nPoints());
+        final int sumOfAllPopulatedBinsInBothHistograms = 3;
+        Assert.assertEquals(sumOfAllPopulatedBinsInBothHistograms, underTest.nPoints());
 
-        final Set<Integer> populatedBinIndexes = new HashSet(Arrays.stream(binIndexes).boxed().collect(Collectors.toList()));
+        final Set<Integer> populatedBinIndexes = findPopulatedIndexesInBothHistograms(firstHistogram, secondHistogram);
         for (int i=0 ; i<nPoints ; i++) {
             if (populatedBinIndexes.contains(i)) {
                 Assert.assertFalse(underTest.binSize(i) == ColourCubeHistogram.NO_SCORE);
@@ -131,5 +131,18 @@ public class ColourCubeHistogramComparisonTest {
 
     private void add(int r, int g, int b, int pixelIndex, MutableColourCubeHistogram underTest) {
         underTest.add(pixelIndex, ColourHelper.getRgb(r, g, b));
+    }
+
+    private Set<Integer> findPopulatedIndexesInBothHistograms(ColourCubeHistogram firstHistogram, ColourCubeHistogram secondHistogram) {
+        Assert.assertEquals(firstHistogram.nBins(), secondHistogram.nBins());
+
+        final Set<Integer> populatedBinIndexes = new HashSet(firstHistogram.nBins());
+        for (int i=0 ; i<firstHistogram.nBins() ; i++) {
+            if (firstHistogram.binSize(i) > 0 && secondHistogram.binSize(i) > 0) {
+                populatedBinIndexes.add(i);
+            }
+        }
+
+        return populatedBinIndexes;
     }
 }

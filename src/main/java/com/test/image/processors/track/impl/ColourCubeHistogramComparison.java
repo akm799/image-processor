@@ -61,8 +61,8 @@ public final class ColourCubeHistogramComparison implements ColourCubeHistogram 
         for (int i=0 ; i<scores.length ; i++) {
             final int histogramScore = histogram.binSize(i);
             final int targetScore = target.binSize(i);
-            if (histogramScore == 0 && targetScore == 0) {
-                scores[i] = NO_SCORE; // If both bins being compared are empty, then no comparison is possible.
+            if (histogramScore == 0 || targetScore == 0) {
+                scores[i] = NO_SCORE; // For any meaningful comparison, both bins must be populated. Otherwise, spurious colours will have a very high score in the comparison.
             } else {
                 scores[i] = Math.abs(targetScore - histogramScore);
             }
