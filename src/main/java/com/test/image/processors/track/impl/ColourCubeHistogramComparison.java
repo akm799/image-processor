@@ -10,6 +10,7 @@ import com.test.image.processors.track.ColourCubeHistogram;
  *
  * Created by Thanos Mavroidis on 07/04/2019.
  */
+@Deprecated
 public final class ColourCubeHistogramComparison implements ColourCubeHistogram {
     private final int width;
     private final int height;
