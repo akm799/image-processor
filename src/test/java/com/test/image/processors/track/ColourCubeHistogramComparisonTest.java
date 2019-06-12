@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 /**
  * Created by Thanos Mavroidis on 13/04/2019.
  */
+@Deprecated
 public class ColourCubeHistogramComparisonTest {
     private final int nDivsInSide = 51;
     private final int nDivsInSideSq = nDivsInSide*nDivsInSide;
