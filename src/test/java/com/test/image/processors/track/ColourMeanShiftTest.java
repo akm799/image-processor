@@ -26,17 +26,18 @@ public class ColourMeanShiftTest {
 
     @Test
     public void shouldShiftTowardsMean() {
-        final ColourCubeHistogram target = defineTargetWindow(); // Target window is all red.
-        final ColourCubeHistogram window = defineWindow(); // Window has a red bottom right quadrant and different colours everywhere else.
-        final ColourCubeDifference comparison = new ColourCubeDifferenceImpl(target, window);
+        final ColourCubeHistogram initialWindow = defineInitialWindow(); // Target window is all red.
+        final ColourCubeHistogram shiftedWindow = defineShiftedWindow(); // Window has a red bottom right quadrant and different colours everywhere else.
+        final ColourCubeDifference comparison = new ColourCubeDifferenceImpl(initialWindow, shiftedWindow);
 
-        final Point newCentre = ColourMeanShift.shift(window, comparison);
+        // Shift from the shifted window back towards the initial window.
+        final Point newCentre = ColourMeanShift.shift(shiftedWindow, comparison);
         Assert.assertNotNull(newCentre);
         Assert.assertEquals(7, newCentre.x); // New centre is at the centre of the bottom right quadrant.
         Assert.assertEquals(7, newCentre.y); // New centre is at the centre of the bottom right quadrant.
     }
 
-    private ColourCubeHistogram defineTargetWindow() {
+    private ColourCubeHistogram defineInitialWindow() {
         final MutableColourCubeHistogram window = new MutableColourCubeHistogramImpl(width, height, nDivsInSide);
         for (int i=0 ; i<width*height ; i++) {
             addRed(i, window);
@@ -45,7 +46,7 @@ public class ColourMeanShiftTest {
         return window;
     }
 
-    private ColourCubeHistogram defineWindow() {
+    private ColourCubeHistogram defineShiftedWindow() {
         final MutableColourCubeHistogram window = new MutableColourCubeHistogramImpl(width, height, nDivsInSide);
 
         for (int i=0 ; i<width*height ; i++) {
