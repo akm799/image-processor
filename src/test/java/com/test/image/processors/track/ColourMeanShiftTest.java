@@ -1,6 +1,6 @@
 package com.test.image.processors.track;
 
-import com.test.image.processors.track.impl.ColourCubeHistogramComparison;
+import com.test.image.processors.track.impl.ColourCubeDifferenceImpl;
 import com.test.image.processors.track.impl.MutableColourCubeHistogramImpl;
 import com.test.image.util.ColourHelper;
 import org.junit.Assert;
@@ -28,7 +28,7 @@ public class ColourMeanShiftTest {
     public void shouldShiftTowardsMean() {
         final ColourCubeHistogram target = defineTargetWindow(); // Target window is all red.
         final ColourCubeHistogram window = defineWindow(); // Window has a red bottom right quadrant and different colours everywhere else.
-        final ColourCubeHistogram comparison = new ColourCubeHistogramComparison(window, target);
+        final ColourCubeDifference comparison = new ColourCubeDifferenceImpl(target, window);
 
         final Point newCentre = ColourMeanShift.shift(window, comparison);
         Assert.assertNotNull(newCentre);

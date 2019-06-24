@@ -10,16 +10,16 @@ import java.awt.*;
 public class ColourMeanShift {
     private static final float INFINITY_WEIGHT = 3f;
 
-    public static Point shift(ColourCubeHistogram window, ColourCubeHistogram comparison) {
+    public static Point shift(ColourCubeHistogram window, ColourCubeDifference comparison) {
         float sumX = 0;
         float sumY = 0;
         float sumWeight = 0;
 
         final int width = window.imageWidth();
         for (int i=0 ; i<window.nBins() ; i++) {
-            final int score = comparison.binSize(i);
-            if (score != ColourCubeHistogram.NO_SCORE) {
-                final float weight = (score == 0 ? INFINITY_WEIGHT : 1f/score);
+            if (comparison.hasBinDiff(i)) {
+                final float diff = comparison.binDiff(i);
+                final float weight = (diff == 0 ? INFINITY_WEIGHT : 1f/diff)*comparison.refBinWeight(i);
                 final IntIterator points = window.binPoints(i).iterator();
                 while (points.hasNext()) {
                     final int pixelIndex = points.next();
