@@ -13,8 +13,11 @@ import com.test.image.processors.padding.PaddingFactors;
 import com.test.image.processors.scale.ScaleDownProcessor;
 import com.test.image.processors.sharp.UsmImageProcessor;
 import com.test.image.processors.var.VariationsImageProcessor;
+import com.test.image.processors.window.WindowImageProcessor;
+import com.test.image.util.ColourHelper;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +29,11 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getDocumentScanImageProcessor();
+        return getWindowImageProcessor();
+    }
+
+    private FileImageProcessor getWindowImageProcessor() throws IOException {
+        return new WindowImageProcessor(new Rectangle(530, 225, 54, 60));
     }
 
     private FileImageProcessor getDocumentScanImageProcessor() throws IOException {
