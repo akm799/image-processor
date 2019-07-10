@@ -12,6 +12,7 @@ import com.test.image.processors.padding.AddPaddingImageProcessor;
 import com.test.image.processors.padding.PaddingFactors;
 import com.test.image.processors.scale.ScaleDownProcessor;
 import com.test.image.processors.sharp.UsmImageProcessor;
+import com.test.image.processors.track.TrackImageProcessor;
 import com.test.image.processors.var.VariationsImageProcessor;
 import com.test.image.processors.window.WindowImageProcessor;
 import com.test.image.util.ColourHelper;
@@ -30,6 +31,14 @@ public class ImageApp {
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
         return getWindowImageProcessor();
+    }
+
+    private FileImageProcessor getTrackImageProcessor() throws IOException {
+        final Point deviation = new Point(-7, -7);
+        final Rectangle initialWindow = new Rectangle(530, 225, 54, 60);
+        final Rectangle offCentreWindow = new Rectangle(initialWindow.x + deviation.x, initialWindow.y + deviation.y, initialWindow.width, initialWindow.height);
+
+        return new TrackImageProcessor(initialWindow, offCentreWindow);
     }
 
     private FileImageProcessor getWindowImageProcessor() throws IOException {
