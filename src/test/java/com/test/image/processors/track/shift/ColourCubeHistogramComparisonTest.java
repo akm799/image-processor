@@ -1,13 +1,12 @@
-package com.test.image.processors.track;
+package com.test.image.processors.track.shift;
 
-import com.test.image.processors.track.impl.ColourCubeHistogramComparison;
-import com.test.image.processors.track.impl.MutableColourCubeHistogramImpl;
+import com.test.image.processors.track.shift.impl.ColourCubeHistogramComparison;
+import com.test.image.processors.track.shift.impl.MutableColourCubeHistogramImpl;
 import com.test.image.util.ColourHelper;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created by Thanos Mavroidis on 13/04/2019.

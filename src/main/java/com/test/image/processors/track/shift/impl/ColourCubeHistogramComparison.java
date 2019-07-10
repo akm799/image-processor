@@ -1,7 +1,7 @@
-package com.test.image.processors.track.impl;
+package com.test.image.processors.track.shift.impl;
 
 import com.test.image.model.collections.IntCollection;
-import com.test.image.processors.track.ColourCubeHistogram;
+import com.test.image.processors.track.shift.ColourCubeHistogram;
 
 /**
  * Histogram representing the comparison of two histograms with the same dimensions.

@@ -1,8 +1,8 @@
-package com.test.image.processors.track.impl;
+package com.test.image.processors.track.shift.impl;
 
 import com.test.image.model.collections.IntArrayList;
 import com.test.image.model.collections.IntCollection;
-import com.test.image.processors.track.MutableColourCubeHistogram;
+import com.test.image.processors.track.shift.MutableColourCubeHistogram;
 import com.test.image.util.ColourHelper;
 
 /**

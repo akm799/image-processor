@@ -1,4 +1,4 @@
-package com.test.image.processors.track;
+package com.test.image.processors.track.shift;
 
 import com.test.image.model.collections.IntIterator;
 

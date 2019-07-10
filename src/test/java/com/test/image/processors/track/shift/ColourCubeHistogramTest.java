@@ -1,7 +1,7 @@
-package com.test.image.processors.track;
+package com.test.image.processors.track.shift;
 
 import com.test.image.model.collections.IntCollection;
-import com.test.image.processors.track.impl.MutableColourCubeHistogramImpl;
+import com.test.image.processors.track.shift.impl.MutableColourCubeHistogramImpl;
 import com.test.image.util.ColourHelper;
 import org.junit.Assert;
 import org.junit.Before;
