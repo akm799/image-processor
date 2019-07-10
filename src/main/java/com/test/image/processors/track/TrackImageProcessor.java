@@ -47,12 +47,14 @@ public final class TrackImageProcessor extends AbstractFileImageProcessor {
     }
 
     private Rectangle shiftTowardsTheInitialWindow(BufferedImage image) {
-        final Point shift = calculateShift(image);
+        final Point newCentre = calculateOffTargetNewCentre(image);
+        final Point shift = new Point(newCentre.x - offCentreWindow.width/2, newCentre.y - offCentreWindow.height/2);
 
         return shiftWindow(shift, offCentreWindow);
     }
 
-    private Point calculateShift(BufferedImage image) {
+    //TODO Investigate why the y-shit seems to be working but the x-shift does not.
+    private Point calculateOffTargetNewCentre(BufferedImage image) {
         final ColourCubeHistogram initial = buildColourHistogramForWindow(image, initialWindow);
         final ColourCubeHistogram offCentre = buildColourHistogramForWindow(image, offCentreWindow);
         final ColourCubeDifference comparison = new ColourCubeDifferenceImpl(initial, offCentre);

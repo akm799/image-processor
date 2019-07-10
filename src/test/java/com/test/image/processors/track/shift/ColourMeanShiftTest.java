@@ -31,10 +31,10 @@ public class ColourMeanShiftTest {
         final ColourCubeDifference comparison = new ColourCubeDifferenceImpl(initialWindow, shiftedWindow);
 
         // Shift from the shifted window back towards the initial window.
-        final Point shift = ColourMeanShift.shift(shiftedWindow, comparison);
-        Assert.assertNotNull(shift);
-        Assert.assertEquals(7, shift.x); // New centre is at the centre of the bottom right quadrant.
-        Assert.assertEquals(7, shift.y); // New centre is at the centre of the bottom right quadrant.
+        final Point newCentre = ColourMeanShift.shift(shiftedWindow, comparison);
+        Assert.assertNotNull(newCentre);
+        Assert.assertEquals(7, newCentre.x); // New centre is at the centre of the bottom right quadrant.
+        Assert.assertEquals(7, newCentre.y); // New centre is at the centre of the bottom right quadrant.
     }
 
     private ColourCubeHistogram defineInitialWindow() {
