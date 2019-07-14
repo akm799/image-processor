@@ -52,7 +52,6 @@ public final class TrackImageProcessor extends AbstractFileImageProcessor {
         return shiftWindow(shift, offCentreWindow);
     }
 
-    //TODO Investigate why the y-shit seems to be working but the x-shift does not.
     private Point calculateOffTargetNewCentre(BufferedImage image) {
         final ColourCubeHistogram initial = buildColourHistogramForWindow(image, initialWindow);
         final ColourCubeHistogram offCentre = buildColourHistogramForWindow(image, offCentreWindow);
@@ -65,7 +64,7 @@ public final class TrackImageProcessor extends AbstractFileImageProcessor {
         final MutableColourCubeHistogram histogram = new MutableColourCubeHistogramImpl(window.width, window.height, nDivsInSide);
         for (int j=window.yMin ; j<=window.yMax ; j++) {
             for (int i=window.xMin ; i<=window.xMax ; i++) {
-                final int pixelIndex = (j - window.yMin)*window.height + (i - window.xMin);
+                final int pixelIndex = (j - window.yMin)*window.width + (i - window.xMin);
                 final int rgb = image.getRGB(i, j);
                 histogram.add(pixelIndex, rgb);
             }

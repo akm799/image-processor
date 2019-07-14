@@ -34,7 +34,7 @@ public class ImageApp {
     }
 
     private FileImageProcessor getTrackImageProcessor() throws IOException {
-        final Point deviation = new Point(0, -15);
+        final Point deviation = new Point(-15, -15);
         final Rectangle initialWindow = new Rectangle(530, 225, 54, 60);
         final Rectangle offCentreWindow = new Rectangle(initialWindow.x + deviation.x, initialWindow.y + deviation.y, initialWindow.width, initialWindow.height);
 
