@@ -47,8 +47,7 @@ public final class TrackImageProcessor extends AbstractFileImageProcessor {
     }
 
     private Rectangle shiftTowardsTheInitialWindow(BufferedImage image) {
-        final Point newCentre = calculateOffTargetNewCentre(image);
-        final Point shift = new Point(newCentre.x - offCentreWindow.width/2, newCentre.y - offCentreWindow.height/2);
+        final Point shift = calculateOffTargetNewCentre(image);
 
         return shiftWindow(shift, offCentreWindow);
     }

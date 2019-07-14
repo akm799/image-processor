@@ -43,7 +43,10 @@ public class ColourMeanShift {
         final int shiftedX = Math.round(sumX/sumWeight);
         final int shiftedY = Math.round(sumY/sumWeight);
 
-        return new Point(shiftedX, shiftedY);
+        final int xShift = shiftedX - window.imageWidth()/2;
+        final int yShift = shiftedY - window.imageHeight()/2;
+
+        return new Point(xShift, yShift);
     }
 
     private ColourMeanShift() {}
