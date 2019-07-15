@@ -7,7 +7,7 @@ import java.awt.*;
  *
  * Created by Thanos Mavroidis on 06/07/2019.
  */
-public final class Window {
+public class Window {
     public final int width;
     public final int height;
     public final int xMin;
@@ -15,7 +15,7 @@ public final class Window {
     public final int yMin;
     public final int yMax;
 
-    public Window(Rectangle rectangle) {
+    Window(Rectangle rectangle) {
         width = rectangle.width;
         height = rectangle.height;
         xMin = rectangle.x;

@@ -14,6 +14,7 @@ import com.test.image.processors.scale.ScaleDownProcessor;
 import com.test.image.processors.sharp.UsmImageProcessor;
 import com.test.image.processors.track.TrackImageProcessor;
 import com.test.image.processors.var.VariationsImageProcessor;
+import com.test.image.processors.window.ColouredWindow;
 import com.test.image.processors.window.WindowImageProcessor;
 import com.test.image.util.ColourHelper;
 
@@ -34,15 +35,20 @@ public class ImageApp {
     }
 
     private FileImageProcessor getTrackImageProcessor() throws IOException {
-        final Point deviation = new Point(-15, -15);
-        final Rectangle initialWindow = new Rectangle(530, 225, 54, 60);
-        final Rectangle offCentreWindow = new Rectangle(initialWindow.x + deviation.x, initialWindow.y + deviation.y, initialWindow.width, initialWindow.height);
+        final int red = ColourHelper.getRgb(255, 0, 0);
+        final int green = ColourHelper.getRgb(0, 255, 0);
+        final int blue = ColourHelper.getRgb(0, 0, 255);
 
-        return new TrackImageProcessor(initialWindow, offCentreWindow);
+        final Point deviation = new Point(-15, -15);
+        final ColouredWindow initialWindow = new ColouredWindow(new Rectangle(530, 225, 54, 60), green);
+        final ColouredWindow offCentreWindow = new ColouredWindow(new Rectangle(initialWindow.xMin + deviation.x, initialWindow.yMin + deviation.y, initialWindow.width, initialWindow.height), red);
+
+        return new TrackImageProcessor(initialWindow, offCentreWindow, blue);
     }
 
     private FileImageProcessor getWindowImageProcessor() throws IOException {
-        return new WindowImageProcessor(new Rectangle(530, 225, 54, 60));
+        final int red = ColourHelper.getRgb(255, 0, 0);
+        return new WindowImageProcessor(new Rectangle(530, 225, 54, 60), red);
     }
 
     private FileImageProcessor getDocumentScanImageProcessor() throws IOException {

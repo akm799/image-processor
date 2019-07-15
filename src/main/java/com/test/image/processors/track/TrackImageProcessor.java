@@ -8,6 +8,7 @@ import com.test.image.processors.track.shift.ColourMeanShift;
 import com.test.image.processors.track.shift.MutableColourCubeHistogram;
 import com.test.image.processors.track.shift.impl.ColourCubeDifferenceImpl;
 import com.test.image.processors.track.shift.impl.MutableColourCubeHistogramImpl;
+import com.test.image.processors.window.ColouredWindow;
 import com.test.image.processors.window.Window;
 import com.test.image.processors.window.WindowImageProcessor;
 
@@ -22,12 +23,14 @@ import java.util.Collection;
 public final class TrackImageProcessor extends AbstractFileImageProcessor {
     private final int nDivsInSide = 51;
 
-    private final Window initialWindow;
-    private final Window offCentreWindow;
+    private final ColouredWindow initialWindow;
+    private final ColouredWindow offCentreWindow;
+    private final int trackingWindowColour;
 
-    public TrackImageProcessor(Rectangle initialWindow, Rectangle offCentreWindow) {
-        this.initialWindow = new Window(initialWindow);
-        this.offCentreWindow = new Window(offCentreWindow);
+    public TrackImageProcessor(ColouredWindow initialWindow, ColouredWindow offCentreWindow, int trackingWindowColour) {
+        this.initialWindow = initialWindow;
+        this.offCentreWindow = offCentreWindow;
+        this.trackingWindowColour = trackingWindowColour;
     }
 
     @Override
@@ -38,9 +41,8 @@ public final class TrackImageProcessor extends AbstractFileImageProcessor {
     @Override
     public BufferedImage processImage(BufferedImage image) {
         final Rectangle trackingRectangle = shiftTowardsTheInitialWindow(image);
-        final Rectangle initialRectangle = new Rectangle(initialWindow.xMin, initialWindow.yMin, initialWindow.width, initialWindow.height);
-        final Rectangle offCentreRectangle = new Rectangle(offCentreWindow.xMin, offCentreWindow.yMin, offCentreWindow.width, offCentreWindow.height);
-        final Collection<Rectangle> windows = Arrays.asList(initialRectangle, trackingRectangle, offCentreRectangle);
+        final ColouredWindow trackingWindow = new ColouredWindow(trackingRectangle, trackingWindowColour);
+        final Collection<ColouredWindow> windows = Arrays.asList(initialWindow, trackingWindow, offCentreWindow);
         final ImageProcessor windowImageProcessor = new WindowImageProcessor(windows);
 
         return windowImageProcessor.processImage(image);
