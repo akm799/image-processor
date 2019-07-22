@@ -3,7 +3,6 @@ package com.test.image.processors.track.shift.impl;
 import com.test.image.processors.track.shift.ColourCubeDifference;
 import com.test.image.processors.track.shift.ColourCubeHistogram;
 
-//TODO Add unit tests based on ColourCubeHistogramComparisonTest.java
 public final class ColourCubeDifferenceImpl implements ColourCubeDifference {
     private final int width;
     private final int height;
