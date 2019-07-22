@@ -22,14 +22,14 @@ public interface ColourCubeDifference {
     int nBins();
 
     /**
-     * Returns true if a comparioson between the bins with the sepcified bin index in the two histograms was possible or
+     * Returns true if a comparison between the bins with the specified bin index in the two histograms was possible or
      * false otherwise. If the comparison was not possible, then the {@link #binDiff(int)} method should not be called,
-     * since no bin difference could be produced. For the comarison to be possible the bin with the input bin index in
+     * since no bin difference could be produced. For the comparison to be possible the bin with the input bin index in
      * the reference histogram must contain at least one point.
      *
      * @param binIndex the index of the bin for which we wish to know if a comparison between the two histograms was
      *                 possible
-     * @return true if a comparioson between the bins with the sepcified bin index in the two histograms was possible or
+     * @return true if a comparison between the bins with the sepcified bin index in the two histograms was possible or
      * false otherwise
      */
     boolean hasBinDiff(int binIndex);
