@@ -16,7 +16,6 @@ public class ColourSimilarity {
      * @param histogram the colour histogram (distribution) whose similarity, with the reference one, we seek
      * @return a number representing the similarity between the two input colour histograms (distributions)
      */
-    //TODO Add unit tests.
     public static float findSimilarity(ColourCubeHistogram reference, ColourCubeHistogram histogram) {
         final float nPoints = reference.nPoints();
         final int side = reference.divisionsInSide();
