@@ -29,6 +29,7 @@ public final class SearchImageProcessor extends AbstractFileImageProcessor {
     private final ColouredWindow targetWindow;
 
     private Window trackingWindow;
+    private Window bestMatchWindow;
     private ColourCubeHistogram targetColourDistribution;
 
     public SearchImageProcessor(ColouredWindow targetWindow, int bestMatchColour) {
@@ -47,7 +48,7 @@ public final class SearchImageProcessor extends AbstractFileImageProcessor {
         trackingWindow = findMostSimilarWindow(image);
         shiftTowardsTheTargetWindow(image);
 
-        final Collection<ColouredWindow> windows = Arrays.asList(targetWindow, new ColouredWindow(trackingWindow, bestMatchColour));
+        final Collection<ColouredWindow> windows = Arrays.asList(targetWindow, new ColouredWindow(bestMatchWindow, bestMatchColour));
         final ImageProcessor windowImageProcessor = new WindowImageProcessor(windows);
 
         return windowImageProcessor.processImage(image);
@@ -88,12 +89,19 @@ public final class SearchImageProcessor extends AbstractFileImageProcessor {
 
     private void shiftTowardsTheTargetWindow(BufferedImage image) {
         Point shift = null;
+        float highestSimilarity = -1;
 
         int i = 0;
         while (haveNotConverged(shift) && i < maxIterations) {
             shift = calculateNewBestCentre(image);
             if (shift != null) {
                 trackingWindow = new Window(shiftWindow(shift, trackingWindow));
+                final ColourCubeHistogram trackingColourDistribution = buildColourHistogramForWindow(image, trackingWindow);
+                final float similarity = ColourSimilarity.findSimilarity(targetColourDistribution, trackingColourDistribution);
+                if (similarity > highestSimilarity) {
+                    highestSimilarity = similarity;
+                    bestMatchWindow = trackingWindow;
+                }
             }
 
             i++;
