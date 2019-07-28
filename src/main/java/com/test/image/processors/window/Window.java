@@ -15,7 +15,16 @@ public class Window {
     public final int yMin;
     public final int yMax;
 
-    Window(Rectangle rectangle) {
+    public Window(Window window) {
+        this.width = window.width;
+        this.height = window.height;
+        this.xMin = window.xMin;
+        this.xMax = window.xMax;
+        this.yMin = window.yMin;
+        this.yMax = window.yMax;
+    }
+
+    public Window(Rectangle rectangle) {
         width = rectangle.width;
         height = rectangle.height;
         xMin = rectangle.x;

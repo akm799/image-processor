@@ -8,6 +8,12 @@ import java.awt.*;
 public final class ColouredWindow extends Window {
     public final int rgb;
 
+    public ColouredWindow(Window window, int rgb) {
+        super(window);
+
+        this.rgb = rgb;
+    }
+
     public ColouredWindow(Rectangle rectangle, int rgb) {
         super(rectangle);
 
