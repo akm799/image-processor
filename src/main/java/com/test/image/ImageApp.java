@@ -13,6 +13,7 @@ import com.test.image.processors.padding.PaddingFactors;
 import com.test.image.processors.scale.ScaleDownProcessor;
 import com.test.image.processors.sharp.UsmImageProcessor;
 import com.test.image.processors.track.IterativeTrackImageProcessor;
+import com.test.image.processors.track.SearchImageProcessor;
 import com.test.image.processors.track.TopSimilarityImageProcessor;
 import com.test.image.processors.track.TrackImageProcessor;
 import com.test.image.processors.var.VariationsImageProcessor;
@@ -33,7 +34,16 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getTopSimilarityImageProcessor();
+        return getSearchImageProcessor();
+    }
+
+    private FileImageProcessor getSearchImageProcessor() throws IOException {
+        final int red = ColourHelper.getRgb(255, 0, 0);
+        final int green = ColourHelper.getRgb(0, 255, 0);
+
+        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(530, 225, 54, 60), green);
+
+        return new SearchImageProcessor(targetWindow, red);
     }
 
     private FileImageProcessor getTopSimilarityImageProcessor() throws IOException {
