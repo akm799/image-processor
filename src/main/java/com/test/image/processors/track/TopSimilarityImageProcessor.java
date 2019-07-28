@@ -2,6 +2,7 @@ package com.test.image.processors.track;
 
 import com.test.image.AbstractFileImageProcessor;
 import com.test.image.ImageProcessor;
+import com.test.image.processors.track.search.WindowsIterator;
 import com.test.image.processors.track.shift.ColourCubeHistogram;
 import com.test.image.processors.track.shift.ColourSimilarity;
 import com.test.image.processors.track.shift.MutableColourCubeHistogram;
@@ -10,7 +11,6 @@ import com.test.image.processors.window.ColouredWindow;
 import com.test.image.processors.window.Window;
 import com.test.image.processors.window.WindowImageProcessor;
 
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,63 +81,5 @@ public final class TopSimilarityImageProcessor extends AbstractFileImageProcesso
         }
 
         return mostSimilarWindow;
-    }
-
-    private static final class WindowsIterator implements Iterator<Window> {
-        private final int imageWidth;
-        private final int imageHeight;
-
-        private final int windowWidth;
-        private final int windowHeight;
-
-        private final int nWidths;
-        private final int nHeights;
-        private final int nWindows;
-
-        private final Rectangle rectangle = new Rectangle();
-
-        private int windowsCounter = 0;
-
-        WindowsIterator(BufferedImage image, Window window) {
-            imageWidth = image.getWidth();
-            imageHeight = image.getHeight();
-
-            windowWidth = window.width;
-            windowHeight = window.height;
-
-            nWidths = partsIn(image.getWidth(), window.width);
-            nHeights = partsIn(image.getHeight(), window.height);
-            nWindows = nWidths*nHeights;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return windowsCounter < nWindows;
-        }
-
-        @Override
-        public Window next() {
-            final int xIndex = windowsCounter%nWidths;
-            final int yIndex = windowsCounter/nWidths;
-
-            final int left = xIndex*windowWidth;
-            final int top = yIndex*windowHeight;
-
-            final int safeLeft = (left + windowWidth <= imageWidth ? left : imageWidth - windowWidth);
-            final int safeTop = (top + windowHeight <= imageHeight ? top : imageHeight - windowHeight);
-
-            rectangle.x = safeLeft;
-            rectangle.y = safeTop;
-            rectangle.width = windowWidth;
-            rectangle.height = windowHeight;
-
-            windowsCounter++;
-
-            return new Window(rectangle);
-        }
-
-        private int partsIn(int large, int small) {
-            return (large/small + (large%small == 0 ? 0 : 1));
-        }
     }
 }
