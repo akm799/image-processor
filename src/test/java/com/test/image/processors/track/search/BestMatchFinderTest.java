@@ -19,10 +19,11 @@ public class BestMatchFinderTest {
 
     @Test
     public void shouldFindBestMatch() throws IOException {
-        final BufferedImage image = ImageIO.read(new File("./src/test/resources/images/gato.jpg"));
+        final BufferedImage targetImage = ImageIO.read(new File("./src/test/resources/images/gato.jpg"));
         final Window targetWindow = new Window(new Rectangle(530, 225, 54, 60));
+        final BufferedImage image = targetImage;
 
-        final Window bestMatchWindow = underTest.findBestMatch(image, targetWindow);
+        final Window bestMatchWindow = underTest.findBestMatch(targetImage, targetWindow, image);
         Assert.assertNotNull(bestMatchWindow);
         Assert.assertEquals(targetWindow.width, bestMatchWindow.width);
         Assert.assertEquals(targetWindow.height, bestMatchWindow.height);

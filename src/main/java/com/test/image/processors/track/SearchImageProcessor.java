@@ -30,7 +30,7 @@ public final class SearchImageProcessor extends AbstractFileImageProcessor {
 
     @Override
     public BufferedImage processImage(BufferedImage image) {
-        final Window bestMatchWindow = (new BestMatchFinder()).findBestMatch(image, targetWindow);
+        final Window bestMatchWindow = (new BestMatchFinder()).findBestMatch(image, targetWindow, image);
         final Collection<ColouredWindow> windows = Arrays.asList(targetWindow, new ColouredWindow(bestMatchWindow, bestMatchColour));
         final ImageProcessor windowImageProcessor = new WindowImageProcessor(windows);
 

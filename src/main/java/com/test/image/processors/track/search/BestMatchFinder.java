@@ -18,15 +18,13 @@ public final class BestMatchFinder {
     private final int maxIterations = 10;
     private final double convergenceDistance = 1.5;
 
-    private Window targetWindow;
     private Window trackingWindow;
     private Window bestMatchWindow;
     private ColourCubeHistogram targetColourDistribution;
 
-    public Window findBestMatch(BufferedImage image, Window targetWindow) {
-        this.targetWindow = targetWindow;
-        this.targetColourDistribution = buildColourHistogramForWindow(image, targetWindow);
-        this.trackingWindow = findMostSimilarWindow(image);
+    public Window findBestMatch(BufferedImage targetImage, Window targetWindow, BufferedImage image) {
+        this.targetColourDistribution = buildColourHistogramForWindow(targetImage, targetWindow);
+        this.trackingWindow = findMostSimilarWindow(targetWindow, image);
         shiftTowardsTheTargetWindow(image);
 
         return bestMatchWindow;
@@ -45,9 +43,7 @@ public final class BestMatchFinder {
         return histogram;
     }
 
-    private Window findMostSimilarWindow(BufferedImage image) {
-        final ColourCubeHistogram targetHistogram = buildColourHistogramForWindow(image, targetWindow);
-
+    private Window findMostSimilarWindow(Window targetWindow, BufferedImage image) {
         float highestSimilarity = -1;
         Window mostSimilarWindow = null;
 
@@ -55,7 +51,7 @@ public final class BestMatchFinder {
         while (iterator.hasNext()) {
             final Window testWindow = iterator.next();
             final ColourCubeHistogram testHistogram = buildColourHistogramForWindow(image, testWindow);
-            final float similarity = ColourSimilarity.findSimilarity(targetHistogram, testHistogram);
+            final float similarity = ColourSimilarity.findSimilarity(targetColourDistribution, testHistogram);
             if (similarity > highestSimilarity) {
                 highestSimilarity = similarity;
                 mostSimilarWindow = testWindow;
