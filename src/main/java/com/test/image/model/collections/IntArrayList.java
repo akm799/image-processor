@@ -6,6 +6,14 @@ public final class IntArrayList implements IntList {
     private static final int DEFAULT_INITIAL_CAPACITY = 1024;
     private static final int DEFAULT_CAPACITY_INCREMENT = 512;
 
+    private static int checkAndGetSize(IntCollection intCollection) {
+        if (intCollection == null) {
+            throw new IllegalArgumentException("Null input IntCollection constructor argument is not allowed.");
+        } else {
+            return intCollection.size();
+        }
+    }
+
     private final int capacityIncrement;
 
     private int size;
@@ -27,12 +35,9 @@ public final class IntArrayList implements IntList {
     }
 
     public IntArrayList(IntCollection intCollection) {
-        this(intCollection.size());
+        this(checkAndGetSize(intCollection));
 
-        final IntIterator iterator = intCollection.iterator();
-        while (iterator.hasNext()) {
-            add(iterator.next());
-        }
+        addAll(intCollection);
     }
 
     private void checkArguments(int initialCapacity, int capacityIncrement) {

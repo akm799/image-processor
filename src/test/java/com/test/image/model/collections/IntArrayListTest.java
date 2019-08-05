@@ -184,12 +184,48 @@ public class IntArrayListTest {
         intCollection.add(1);
 
         underTest.addAll(intCollection);
+        Assert.assertFalse(underTest.isEmpty());
         Assert.assertEquals(3, underTest.size());
+
         final IntIterator expected = intCollection.iterator();
         final IntIterator actual = underTest.iterator();
         while (expected.hasNext()) {
             Assert.assertTrue(actual.hasNext());
             Assert.assertEquals(expected.next(), actual.next());
+        }
+    }
+
+    @Test
+    public void testIntCollectionConstructor() {
+        final IntCollection input = new IntArrayList(3);
+        input.add(3);
+        input.add(2);
+        input.add(1);
+
+        final IntList underTest = new IntArrayList(input);
+
+        Assert.assertFalse(underTest.isEmpty());
+        Assert.assertEquals(3, underTest.size());
+
+        final IntIterator expected = input.iterator();
+        final IntIterator actual = underTest.iterator();
+        while (expected.hasNext()) {
+            Assert.assertTrue(actual.hasNext());
+            Assert.assertEquals(expected.next(), actual.next());
+        }
+
+        Assert.assertEquals(3, underTest.get(0));
+        Assert.assertEquals(2, underTest.get(1));
+        Assert.assertEquals(1, underTest.get(2));
+    }
+
+    @Test
+    public void testNullIntCollectionConstructor() {
+        try {
+            final IntList underTest = new IntArrayList(null);
+            Assert.fail();
+        } catch (IllegalArgumentException iae) {
+            Assert.assertEquals("Null input IntCollection constructor argument is not allowed.", iae.getMessage());
         }
     }
 }
