@@ -5,6 +5,8 @@ import com.test.image.model.collections.IntCollection;
 import com.test.image.processors.track.shift.MutableColourCubeHistogram;
 import com.test.image.util.ColourHelper;
 
+import java.util.Arrays;
+
 /**
  * Created by Thanos Mavroidis on 07/04/2019.
  */
@@ -101,6 +103,19 @@ public final class MutableColourCubeHistogramImpl implements MutableColourCubeHi
         } else {
             return (int) (value/binSide);
 
+        }
+    }
+
+    /**
+     * Please not that this implementation, although deleting all pixel entries as per the contact of this method, preserves
+     * the memory that was occupied by the deleted entries, for future use.
+     */
+    @Override
+    public void clear() {
+        for (IntCollection bin: bins) {
+            if (bin != null) {
+                bin.clear();
+            }
         }
     }
 }

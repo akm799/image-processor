@@ -7,7 +7,6 @@ import com.test.image.model.collections.IntCollection;
  * Created by Thanos Mavroidis on 07/04/2019.
  */
 public interface ColourCubeHistogram {
-    int NO_SCORE = -1;
 
     int imageWidth();
 

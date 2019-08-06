@@ -30,6 +30,13 @@ public class ColourCubeHistogramTest {
     }
 
     @Test
+    public void shouldHaveInputDimensions() {
+        Assert.assertEquals(width, underTest.imageWidth());
+        Assert.assertEquals(height, underTest.imageHeight());
+        Assert.assertEquals(nDivsInSide, underTest.divisionsInSide());
+    }
+
+    @Test
     public void shouldReturnBinSize() {
         Assert.assertEquals(nBins, underTest.nBins());
     }
@@ -88,6 +95,74 @@ public class ColourCubeHistogramTest {
                 Assert.assertTrue(underTest.binPoints(i).isEmpty());
             }
         }
+    }
+
+    @Test
+    public void shouldClear() {
+        Assert.assertEquals(width, underTest.imageWidth());
+        Assert.assertEquals(height, underTest.imageHeight());
+        Assert.assertEquals(nDivsInSide, underTest.divisionsInSide());
+
+        final int binIndex = 0;
+        add(0, 0, 0, 0, underTest);
+        add(2, 3, 2, 1, underTest);
+        Assert.assertEquals(2, underTest.nPoints());
+        Assert.assertEquals(2, underTest.binSize(binIndex));
+        assertBin(underTest.binPoints(binIndex), 0, 1);
+
+        // Clear the histogram.
+        underTest.clear();
+
+        // Check that the cleared histogram has maintained the original dimensions.
+        Assert.assertEquals(width, underTest.imageWidth());
+        Assert.assertEquals(height, underTest.imageHeight());
+        Assert.assertEquals(nDivsInSide, underTest.divisionsInSide());
+
+        // Check that all the bins of the cleared histogram are empty.
+        Assert.assertEquals(0, underTest.nPoints());
+        for (int i=0 ; i<underTest.nBins() ; i++) {
+            Assert.assertEquals(0, underTest.binSize(i));
+        }
+    }
+
+    @Test
+    public void shouldClearAndReuse() {
+        Assert.assertEquals(width, underTest.imageWidth());
+        Assert.assertEquals(height, underTest.imageHeight());
+        Assert.assertEquals(nDivsInSide, underTest.divisionsInSide());
+
+        final int binIndex1 = 0;
+        add(0, 0, 0, 0, underTest);
+        add(2, 3, 2, 1, underTest);
+        Assert.assertEquals(2, underTest.nPoints());
+        Assert.assertEquals(2, underTest.binSize(binIndex1));
+        assertBin(underTest.binPoints(binIndex1), 0, 1);
+
+        // Clear the histogram.
+        underTest.clear();
+
+        Assert.assertEquals(width, underTest.imageWidth());
+        Assert.assertEquals(height, underTest.imageHeight());
+        Assert.assertEquals(nDivsInSide, underTest.divisionsInSide());
+
+        Assert.assertEquals(0, underTest.nPoints());
+        for (int i=0 ; i<underTest.nBins() ; i++) {
+            Assert.assertEquals(0, underTest.binSize(i));
+        }
+
+        // Start re-using the cleared histogram.
+        add(0, 0, 0, 0, underTest);
+        add(2, 3, 2, 1, underTest);
+        Assert.assertEquals(2, underTest.binSize(binIndex1));
+        assertBin(underTest.binPoints(binIndex1), 0, 1);
+
+        final int binIndex2 = nDivsInSide - 1;
+        add(255, 0, 0, 2, underTest);
+        add(253, 2, 3, 3, underTest);
+        Assert.assertEquals(2, underTest.binSize(binIndex2));
+        assertBin(underTest.binPoints(binIndex2), 2, 3);
+
+        Assert.assertEquals(4, underTest.nPoints());
     }
 
     private void add(int r, int g, int b, int pixelIndex, MutableColourCubeHistogram underTest) {
