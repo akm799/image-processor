@@ -1,6 +1,6 @@
 package com.test.image.processors.track.shift;
 
-import com.test.image.processors.track.shift.impl.ColourCubeDifferenceImpl;
+import com.test.image.processors.track.shift.impl.MutableColourCubeDifferenceImpl;
 import com.test.image.processors.track.shift.impl.MutableColourCubeHistogramImpl;
 import com.test.image.util.ColourHelper;
 import org.junit.Assert;
@@ -8,9 +8,9 @@ import org.junit.Test;
 
 
 /**
- * Created by Thanos Mavroidis on 12/06/2019.
+ * Created by Thanos Mavroidis on 07/08/2019.
  */
-public class ColourCubeDifferenceTest {
+public class MutableColourCubeDifferenceTest {
     private final int nDivsInSide = 51;
     private final int nDivsInSideSq = nDivsInSide*nDivsInSide;
     private final int nBins = nDivsInSideSq*nDivsInSide;
@@ -29,12 +29,16 @@ public class ColourCubeDifferenceTest {
         Assert.assertArrayEquals(referenceBinIndexes, histogramBinIndexes);
         final int[] binIndexes = referenceBinIndexes;
 
-        final ColourCubeDifference underTest = new ColourCubeDifferenceImpl(reference, histogram);
+        // Create the colour cube difference template with only the reference histogram.
+        final MutableColourCubeDifference underTest = new MutableColourCubeDifferenceImpl(reference);
 
         Assert.assertEquals(width, underTest.imageWidth());
         Assert.assertEquals(height, underTest.imageHeight());
         Assert.assertEquals(nDivsInSide, underTest.divisionsInSide());
         Assert.assertEquals(nBins, underTest.nBins());
+
+        // Evaluate the colour cube difference of the input histogram wrt the reference one.
+        underTest.evaluate(histogram);
 
         Assert.assertEquals(histogram.nBins(), reference.nBins());
         Assert.assertEquals(histogram.nBins(), underTest.nBins());
@@ -143,6 +147,40 @@ public class ColourCubeDifferenceTest {
         add(127, 129, 128, 13, histogram);
 
         return new int[] {binIndex1, binIndex2, binIndex3, binIndex4, binIndex5, binIndex6, binIndex7};
+    }
+
+    @Test
+    public void shouldNotCompareHistogramsWhenNoEvaluationIsMade() {
+        final MutableColourCubeHistogram reference = new MutableColourCubeHistogramImpl(width, height, nDivsInSide);
+        final MutableColourCubeHistogram histogram = new MutableColourCubeHistogramImpl(width, height, nDivsInSide);
+        Assert.assertEquals(histogram.nPoints(), reference.nPoints());
+
+        final int[] referenceBinIndexes = populateReferenceHistogram(reference);
+        final int[] histogramBinIndexes = populateHistogram(histogram);
+        Assert.assertArrayEquals(referenceBinIndexes, histogramBinIndexes);
+        final int[] binIndexes = referenceBinIndexes;
+
+        // Create the colour cube difference template with only the reference histogram.
+        final MutableColourCubeDifference underTest = new MutableColourCubeDifferenceImpl(reference);
+
+        Assert.assertEquals(width, underTest.imageWidth());
+        Assert.assertEquals(height, underTest.imageHeight());
+        Assert.assertEquals(nDivsInSide, underTest.divisionsInSide());
+        Assert.assertEquals(nBins, underTest.nBins());
+
+        try {
+            underTest.hasBinDiff(0);
+            Assert.fail();
+        } catch (IllegalStateException ise) {
+            Assert.assertEquals("No difference has been evaluated. Please ensure that the 'evaluate(ColourCubeHistogram)' method has been called first.", ise.getMessage());
+        }
+
+        try {
+            underTest.binDiff(1);
+            Assert.fail();
+        } catch (IllegalStateException ise) {
+            Assert.assertEquals("No difference has been evaluated. Please ensure that the 'evaluate(ColourCubeHistogram)' method has been called first.", ise.getMessage());
+        }
     }
 
     private void add(int r, int g, int b, int pixelIndex, MutableColourCubeHistogram underTest) {
