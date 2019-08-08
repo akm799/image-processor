@@ -1,5 +1,6 @@
 package com.test.image.processors.track.search;
 
+import com.test.image.processors.track.search.impl.BasicBestMatchFinder;
 import com.test.image.processors.window.Window;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +16,7 @@ import java.io.IOException;
  */
 public class BestMatchFinderTest {
     private final int pixelTolerance = 2;
-    private final BestMatchFinder underTest = new BestMatchFinder();
+    private final BestMatchFinder underTest = new BasicBestMatchFinder();
 
     @Test
     public void shouldFindBestMatch() throws IOException {

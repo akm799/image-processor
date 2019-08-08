@@ -2,7 +2,7 @@ package com.test.image.processors.track;
 
 import com.test.image.AbstractFileImageProcessor;
 import com.test.image.ImageProcessor;
-import com.test.image.processors.track.search.BestMatchFinder;
+import com.test.image.processors.track.search.impl.BasicBestMatchFinder;
 import com.test.image.processors.window.ColouredWindow;
 import com.test.image.processors.window.Window;
 import com.test.image.processors.window.WindowImageProcessor;
@@ -30,7 +30,7 @@ public final class SearchImageProcessor extends AbstractFileImageProcessor {
 
     @Override
     public BufferedImage processImage(BufferedImage image) {
-        final Window bestMatchWindow = (new BestMatchFinder()).findBestMatch(image, targetWindow, image);
+        final Window bestMatchWindow = (new BasicBestMatchFinder()).findBestMatch(image, targetWindow, image);
         final Collection<ColouredWindow> windows = Arrays.asList(targetWindow, new ColouredWindow(bestMatchWindow, bestMatchColour));
         final ImageProcessor windowImageProcessor = new WindowImageProcessor(windows);
 

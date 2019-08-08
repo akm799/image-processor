@@ -24,7 +24,6 @@ public final class WindowsIterator implements Iterator<Window> {
     private final int windowHeight;
 
     private final int nWidths;
-    private final int nHeights;
     private final int nWindows;
 
     private final Rectangle rectangle = new Rectangle();
@@ -47,7 +46,7 @@ public final class WindowsIterator implements Iterator<Window> {
         windowHeight = window.height;
 
         nWidths = partsIn(image.getWidth(), window.width);
-        nHeights = partsIn(image.getHeight(), window.height);
+        final int nHeights = partsIn(image.getHeight(), window.height);
         nWindows = nWidths*nHeights;
 
         rectangle.width = windowWidth;
