@@ -1,6 +1,7 @@
 package com.test.image.processors.track.search;
 
 import com.test.image.processors.track.search.impl.BasicBestMatchFinder;
+import com.test.image.processors.track.search.impl.RecyclingBestMatchFinder;
 import com.test.image.processors.window.Window;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,10 +17,18 @@ import java.io.IOException;
  */
 public class BestMatchFinderTest {
     private final int pixelTolerance = 2;
-    private final BestMatchFinder underTest = new BasicBestMatchFinder();
 
     @Test
-    public void shouldFindBestMatch() throws IOException {
+    public void shouldFindBestMatchWithBasicFinder() throws IOException {
+        testBestMatch(new BasicBestMatchFinder());
+    }
+
+    @Test
+    public void shouldFindBestMatchWithRecyclingFinder() throws IOException {
+        testBestMatch(new RecyclingBestMatchFinder());
+    }
+
+    private void testBestMatch(BestMatchFinder underTest) throws IOException {
         final BufferedImage targetImage = ImageIO.read(new File("./src/test/resources/images/gato.jpg"));
         final Window targetWindow = new Window(new Rectangle(530, 225, 54, 60));
         final BufferedImage image = targetImage;
