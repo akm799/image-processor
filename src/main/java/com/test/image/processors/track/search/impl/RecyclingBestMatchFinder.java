@@ -82,13 +82,15 @@ public final class RecyclingBestMatchFinder implements BestMatchFinder {
     private void shiftTowardsTheTargetWindow(BufferedImage image) {
         Point shift = null;
         float highestSimilarity = -1;
+        MutableColourCubeHistogram trackingColourDistribution = null;
 
         int i = 0;
         while (haveNotConverged(shift) && i < maxIterations) {
             shift = calculateNewBestCentre(image);
             if (shift != null) {
                 trackingWindow = new Window(shiftWindow(shift, trackingWindow));
-                final ColourCubeHistogram trackingColourDistribution = buildColourHistogramForWindow(image, trackingWindow);
+                trackingColourDistribution = buildOrClearTestHistogram(trackingWindow, trackingColourDistribution);
+                fillColourHistogramForWindow(image, trackingWindow, trackingColourDistribution);
                 final float similarity = ColourSimilarity.findSimilarity(targetColourDistribution, trackingColourDistribution);
                 if (similarity > highestSimilarity) {
                     highestSimilarity = similarity;
