@@ -37,7 +37,7 @@ public final class SquareToCircleImageProcessor extends AbstractFileImageProcess
         double u, v;
         double x, y; // x-y range must be between -1 and 1
         double yf;
-        int ip, jp; // x-y range must be between 0 and w
+        int ip, jp; // x-y range must be between 0 and w-h
         for (int j=0 ; j<h ; j++) {
             y = j*yh - 1;
             yf = Math.sqrt(1 - y*y/2);
