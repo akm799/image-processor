@@ -2,6 +2,7 @@ package com.test.image;
 
 import com.test.image.processors.blur.ColourGaussianBlurProcessor;
 import com.test.image.processors.blur.GaussianBlurProcessor;
+import com.test.image.processors.circle.CircleQrCodeImageProcessor;
 import com.test.image.processors.circle.SquareToCircleImageProcessor;
 import com.test.image.processors.circle.RingImageProcessor;
 import com.test.image.processors.circle.SquareToHollowCircleImageProcessor;
@@ -36,7 +37,11 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getSquareToHollowCircleImageProcessor();
+        return getCircleQrCodeImageProcessor(args[2]);
+    }
+
+    private FileImageProcessor getCircleQrCodeImageProcessor(String logoFileName) {
+        return new CircleQrCodeImageProcessor(logoFileName);
     }
 
     private FileImageProcessor getSquareToHollowCircleImageProcessor() {
@@ -141,7 +146,7 @@ public class ImageApp {
     }
 
     public static void main(String[] args) throws IOException {
-        if (args.length != 2) {
+        if (args.length < 2) {
             System.err.println("Invalid arguments.");
             System.out.println("com.test.image.ImageApp <input_image_file_path> <output_image_file_path>");
             System.exit(1);
@@ -149,6 +154,6 @@ public class ImageApp {
 
         final ImageApp imageApp = new ImageApp();
         final File output = imageApp.getImageProcessor(args).processImage(new File(args[0]), args[1]);
-        System.out.println("Output written to " + output.getAbsolutePath());
+        System.out.println("Output written to " + output.getAbsolutePath() + " (" + output.length()+ " bytes)");
     }
 }

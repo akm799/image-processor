@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class OverlayImageProcessor extends AbstractFileImageProcessor {
-    private final boolean baseSymetric;
+    private final boolean baseSymmetric;
     private final Collection<Overlay> overlays = new ArrayList<>();
 
     private int width;
@@ -16,9 +16,9 @@ public class OverlayImageProcessor extends AbstractFileImageProcessor {
     private int baseLeft;
     private int baseTop;
 
-    public OverlayImageProcessor(Collection<Overlay> overlays, boolean baseSymetric) {
+    public OverlayImageProcessor(Collection<Overlay> overlays, boolean baseSymmetric) {
         this.overlays.addAll(overlays);
-        this.baseSymetric = baseSymetric;
+        this.baseSymmetric = baseSymmetric;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class OverlayImageProcessor extends AbstractFileImageProcessor {
             maxBottom = Math.max(maxBottom, overlay.top + overlay.image.getHeight() - base.getHeight());
         }
 
-        if (baseSymetric) {
+        if (baseSymmetric) {
             final int extraSideWidth = Math.max(maxLeft, maxRight);
             width = base.getWidth() + 2*extraSideWidth;
             baseLeft = extraSideWidth;
