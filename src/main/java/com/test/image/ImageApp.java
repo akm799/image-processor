@@ -2,6 +2,9 @@ package com.test.image;
 
 import com.test.image.processors.blur.ColourGaussianBlurProcessor;
 import com.test.image.processors.blur.GaussianBlurProcessor;
+import com.test.image.processors.circle.SquareToCircleImageProcessor;
+import com.test.image.processors.circle.RingImageProcessor;
+import com.test.image.processors.circle.SquareToHollowCircleImageProcessor;
 import com.test.image.processors.composition.Overlay;
 import com.test.image.processors.composition.OverlayImageProcessor;
 import com.test.image.processors.corner.CornerImageProcessor;
@@ -15,7 +18,6 @@ import com.test.image.processors.sharp.UsmImageProcessor;
 import com.test.image.processors.track.IterativeTrackImageProcessor;
 import com.test.image.processors.track.SearchImageProcessor;
 import com.test.image.processors.track.TopSimilarityImageProcessor;
-import com.test.image.processors.track.TrackImageProcessor;
 import com.test.image.processors.var.VariationsImageProcessor;
 import com.test.image.processors.window.ColouredWindow;
 import com.test.image.processors.window.WindowImageProcessor;
@@ -34,7 +36,19 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getSearchImageProcessor();
+        return getSquareToHollowCircleImageProcessor();
+    }
+
+    private FileImageProcessor getSquareToHollowCircleImageProcessor() {
+        return new SquareToHollowCircleImageProcessor(0.75);
+    }
+
+    private FileImageProcessor getSquareToRingImageProcessor() {
+        return new RingImageProcessor(0.5);
+    }
+
+    private FileImageProcessor getSquareToCircleImageProcessor() {
+        return new SquareToCircleImageProcessor();
     }
 
     private FileImageProcessor getSearchImageProcessor() throws IOException {
