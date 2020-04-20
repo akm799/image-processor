@@ -79,12 +79,15 @@ public class OverlayImageProcessor extends AbstractFileImageProcessor {
     private void copyOverlayImage(Overlay overlay, BufferedImage image) {
         final int left = overlay.left + baseLeft;
         final int top = overlay.top + baseTop;
+        final OverlayFilter filter = overlay.filter;
         for (int j=0 ; j<overlay.image.getHeight() ; j++) {
             for (int i=0 ; i<overlay.image.getWidth() ; i++) {
                 final int rgb = overlay.image.getRGB(i, j);
                 final int alpha = ColourHelper.getAlpha(rgb);
-                if (alpha > 0) { //TODO Blend colour with correct alpha.
-                    image.setRGB(left + i, top + j, rgb);
+                if (filter == null || filter.includePixel(i, j)) {
+                    if (alpha > 0) { //TODO Blend colour with correct alpha.
+                        image.setRGB(left + i, top + j, rgb);
+                    }
                 }
             }
         }

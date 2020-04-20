@@ -3,6 +3,7 @@ package com.test.image.processors.circle;
 
 import com.test.image.AbstractFileImageProcessor;
 import com.test.image.processors.composition.Overlay;
+import com.test.image.processors.composition.OverlayFilter;
 import com.test.image.processors.composition.OverlayImageProcessor;
 
 import javax.imageio.ImageIO;
@@ -64,7 +65,18 @@ public final class CircleQrCodeImageProcessor extends AbstractFileImageProcessor
         final double r = logo.getWidth()/2.0;
         final int left = (int)Math.round(cx - r);
         final int top = (int)Math.round(cy - r);
-        final Overlay logoOverlay = new Overlay(logo, left, top);
+
+        final OverlayFilter circleFilter = new OverlayFilter() {
+            @Override
+            public boolean includePixel(int columnIndex, int rowIndex) {
+                final double x = columnIndex - r;
+                final double y = rowIndex - r;
+
+                return Math.sqrt(x*x + y*y) < r;
+            }
+        };
+
+        final Overlay logoOverlay = new Overlay(logo, left, top, circleFilter);
 
         return Arrays.asList(logoOverlay);
     }
