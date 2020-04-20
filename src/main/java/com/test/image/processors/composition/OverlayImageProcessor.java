@@ -29,7 +29,7 @@ public class OverlayImageProcessor extends AbstractFileImageProcessor {
     @Override
     public BufferedImage processImage(BufferedImage base) {
         setNewImageDimensions(base);
-        final BufferedImage outputImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        final BufferedImage outputImage = new BufferedImage(width, height, base.getType());
         copyBaseImage(base, outputImage);
         for (Overlay overlay : overlays) {
             copyOverlayImage(overlay, outputImage);

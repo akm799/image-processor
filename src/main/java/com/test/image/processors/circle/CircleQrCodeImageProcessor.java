@@ -55,7 +55,6 @@ public final class CircleQrCodeImageProcessor extends AbstractFileImageProcessor
     private BufferedImage placeLogoInCentre(BufferedImage hollowCircleQrCode, BufferedImage logo) {
         final Collection<Overlay> overlays = computeOverlay(hollowCircleQrCode, logo);
 
-        //TODO Debug the OverlayImageProcessor. Dimensions seem to be OK but it returns an empty image.
         return (new OverlayImageProcessor(overlays, true)).processImage(hollowCircleQrCode);
     }
 
