@@ -15,6 +15,7 @@ import java.util.Collection;
 
 public final class CircleQrCodeImageProcessor extends AbstractFileImageProcessor {
     private final String logoFileName;
+    private final double logoRadiusFraction = 0.76; // Logo is circular but inside a larger square image. Temporary hack until we get square image in which the circular logo fits exactly.
 
     public CircleQrCodeImageProcessor(String logoFileName) {
         this.logoFileName = logoFileName;
@@ -46,7 +47,7 @@ public final class CircleQrCodeImageProcessor extends AbstractFileImageProcessor
     private double computeCentreRadiusFraction(BufferedImage qrCode, BufferedImage logo) {
         final double r = qrCode.getWidth()/2.0;
 
-        return logo.getWidth()/(2*r);
+        return logoRadiusFraction*logo.getWidth()/(2*r);
     }
 
     private BufferedImage toHollowCircle(BufferedImage qrCode, double centreRadiusFraction) {
@@ -62,15 +63,17 @@ public final class CircleQrCodeImageProcessor extends AbstractFileImageProcessor
     private Collection<Overlay> computeOverlay(BufferedImage hollowCircleQrCode, BufferedImage logo) {
         final double cx = hollowCircleQrCode.getWidth()/2.0;
         final double cy = hollowCircleQrCode.getHeight()/2.0;
-        final double r = logo.getWidth()/2.0;
-        final int left = (int)Math.round(cx - r);
-        final int top = (int)Math.round(cy - r);
+        final double logoCx = logo.getWidth()/2.0;
+        final double logoCy = logo.getHeight()/2.0;
+        final double r = logoRadiusFraction*logo.getWidth()/2.0;
+        final int left = (int)Math.round(cx - logoCx);
+        final int top = (int)Math.round(cy - logoCy);
 
         final OverlayFilter circleFilter = new OverlayFilter() {
             @Override
             public boolean includePixel(int columnIndex, int rowIndex) {
-                final double x = columnIndex - r;
-                final double y = rowIndex - r;
+                final double x = columnIndex - logoCx;
+                final double y = rowIndex - logoCy;
 
                 return Math.sqrt(x*x + y*y) < r;
             }
