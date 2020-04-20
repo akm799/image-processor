@@ -23,7 +23,7 @@ public class OverlayImageProcessor extends AbstractFileImageProcessor {
 
     @Override
     public String getDescription() {
-        return ("Overlayed " + overlays.size() + " image" + (overlays.size() == 1 ? "." : "s."));
+        return ("Overlaid " + overlays.size() + " image" + (overlays.size() == 1 ? "." : "s."));
     }
 
     @Override
