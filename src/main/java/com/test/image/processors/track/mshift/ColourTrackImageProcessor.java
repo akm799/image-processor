@@ -1,12 +1,15 @@
 package com.test.image.processors.track.mshift;
 
 import com.test.image.AbstractFileImageProcessor;
+import com.test.image.ImageProcessor;
 import com.test.image.processors.window.ColouredWindow;
 import com.test.image.processors.window.Window;
+import com.test.image.processors.window.WindowImageProcessor;
 import com.test.image.util.ColourHelper;
 
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Created by Thanos Mavroidis on 08/12/2020.
@@ -56,6 +59,12 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     @Override
     public BufferedImage processImage(BufferedImage image) {
+        shiftTowardsTheInitialWindow(image);
+
+        return composeFinalImage(image);
+    }
+
+    private void shiftTowardsTheInitialWindow(BufferedImage image) {
         int n = 0;
         boolean notConverged = true;
         while (notConverged && n < N_ITERATIONS_MAX) {
@@ -63,9 +72,6 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
             notConverged = !shiftCentre(image, trackingWindow);
             n++;
         }
-
-        //TODO Compose and return image with 3 windows (initial, target and result)
-        return null;
     }
 
     private void fillColourHistogramForWindow(BufferedImage image, Window window) {
@@ -122,5 +128,12 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         } else {
             return (int) (rgbComponent/binWidth);
         }
+    }
+
+    private BufferedImage composeFinalImage(BufferedImage image) {
+        final Collection<ColouredWindow> windows = Arrays.asList(initialWindow, trackingWindow, offCentreWindow);
+        final ImageProcessor windowImageProcessor = new WindowImageProcessor(windows);
+
+        return windowImageProcessor.processImage(image);
     }
 }
