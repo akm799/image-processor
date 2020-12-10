@@ -1,8 +1,21 @@
 package com.test.image.util;
 
 public class ColourHelper {
+    private static final int MAX_RGB_COMPONENT = 255;
     private static final int MAX_ALPHA = 255;
     private static final byte MAX_ALPHA_BYTE = (byte)MAX_ALPHA;
+
+    public static boolean isValidRgbColour(int rgb) {
+        final int red = getRed(rgb);
+        final int green = getGreen(rgb);
+        final int blue = getBlue(rgb);
+
+        return isValidRgbComponent(red) && isValidRgbComponent(green) && isValidRgbComponent(blue);
+    }
+
+    private static boolean isValidRgbComponent(int rgbComponent) {
+        return 0 <= rgbComponent && rgbComponent <= MAX_RGB_COMPONENT;
+    }
 
     public static int getAlpha(int rgb) {
         return (rgb >> 24) & 0xFF;

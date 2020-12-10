@@ -29,6 +29,8 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     private final float binWidth;
     private final int[] colourHistogram;
 
+    private final boolean track;
+
     private int x = 0;
     private int y = 0;
     private ColouredWindow trackingWindow;
@@ -38,18 +40,49 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
      * @param offCentreWindow our initial window which is the same size as our initial window but centered somewhere else so as to contain only a part of the initial window
      * @param trackingWindowColour the colour of the window we will find when we process the image
      * @param nDivisionsInColourSide the number of divisions in each side of our colour cube
-     *
      */
     public ColourTrackImageProcessor(ColouredWindow initialWindow, ColouredWindow offCentreWindow, int trackingWindowColour, int nDivisionsInColourSide) {
+        this(initialWindow, offCentreWindow, trackingWindowColour, nDivisionsInColourSide, false);
+    }
+
+    /**
+     * @param initialWindow the window which we want to track
+     * @param offCentreWindow our initial window which is the same size as our initial window but centered somewhere else so as to contain only a part of the initial window
+     * @param trackingWindowColour the colour of the window we will find when we process the image
+     * @param nDivisionsInColourSide the number of divisions in each side of our colour cube
+     * @param noTracking if true no tracking will be done but only the initial and off-centre windows will be shown
+     */
+    public ColourTrackImageProcessor(ColouredWindow initialWindow, ColouredWindow offCentreWindow, int trackingWindowColour, int nDivisionsInColourSide, boolean noTracking) {
+        checkArgs(initialWindow, offCentreWindow, trackingWindowColour, nDivisionsInColourSide);
+
         this.initialWindow = initialWindow;
         this.offCentreWindow = offCentreWindow;
         this.trackingWindow = new ColouredWindow(offCentreWindow, trackingWindowColour);
         this.trackingWindowColour = trackingWindowColour;
+        this.track = !noTracking;
 
         this.nSideDivs = nDivisionsInColourSide;
         this.nSideDivsSq = nSideDivs*nSideDivs;
         this.binWidth = MAX_COLOUR_VALUE/nSideDivs;
         this.colourHistogram = new int[nSideDivsSq*nSideDivs];
+    }
+
+    private void checkArgs(Window initialWindow, Window offCentreWindow, int trackingWindowColour, int nDivisionsInColourSide) {
+        if (initialWindow == null || offCentreWindow == null) {
+            throw new IllegalArgumentException("One or both input windows are null. No input windows are allowed to be null.");
+        }
+
+        if (!initialWindow.overlaps(offCentreWindow)) {
+            throw new IllegalArgumentException("The initial and off-centre windows do not overlap. They must overlap, even by a small amount.");
+        }
+
+        if (!ColourHelper.isValidRgbColour(trackingWindowColour)) {
+            throw new IllegalArgumentException("Invalid tracking window colour (" + trackingWindowColour + "). This colour must be a valid RGB colour.");
+        }
+
+        if (nDivisionsInColourSide <= 1) {
+            throw new IllegalArgumentException("Illegal argument nDivisionsInColourSide=" + nDivisionsInColourSide + ". It must be greater than 1.");
+        }
     }
 
     @Override
@@ -59,7 +92,9 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     @Override
     public BufferedImage processImage(BufferedImage image) {
-        shiftTowardsTheInitialWindow(image);
+        if (track) {
+            shiftTowardsTheInitialWindow(image);
+        }
 
         return composeFinalImage(image);
     }
@@ -131,9 +166,17 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     }
 
     private BufferedImage composeFinalImage(BufferedImage image) {
-        final Collection<ColouredWindow> windows = Arrays.asList(initialWindow, trackingWindow, offCentreWindow);
+        final Collection<ColouredWindow> windows = assembleDisplayWindows();
         final ImageProcessor windowImageProcessor = new WindowImageProcessor(windows);
 
         return windowImageProcessor.processImage(image);
+    }
+
+    private Collection<ColouredWindow> assembleDisplayWindows() {
+        if (track) {
+            return Arrays.asList(initialWindow, offCentreWindow, trackingWindow);
+        } else {
+            return Arrays.asList(initialWindow, offCentreWindow);
+        }
     }
 }

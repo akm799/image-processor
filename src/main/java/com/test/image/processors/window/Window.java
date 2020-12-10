@@ -33,6 +33,17 @@ public class Window {
         yMax = rectangle.y + rectangle.height - 1;
     }
 
+    public boolean overlaps(Window other) {
+        if (other == null) {
+            return false;
+        }
+
+        final boolean xOverlap = xMax > other.xMin || other.xMax > xMin;
+        final boolean yOverlap = yMax > other.yMin || other.yMax > yMin;
+
+        return xOverlap && yOverlap;
+    }
+
     public Window shift(int dx, int dy) {
         final Rectangle shifted = new Rectangle();
         shifted.x = xMin + dx;
