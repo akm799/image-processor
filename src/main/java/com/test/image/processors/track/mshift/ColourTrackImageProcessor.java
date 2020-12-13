@@ -30,6 +30,7 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     private final int[] colourHistogram;
 
     private final boolean track;
+    private final boolean normaliseColours;
 
     private int[][] weights;
     private ColouredWindow trackingWindow;
@@ -41,7 +42,7 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
      * @param nDivisionsInColourSide the number of divisions in each side of our colour cube
      */
     public ColourTrackImageProcessor(ColouredWindow targetWindow, ColouredWindow initialOffTargetWindow, int trackingWindowColour, int nDivisionsInColourSide) {
-        this(targetWindow, initialOffTargetWindow, trackingWindowColour, nDivisionsInColourSide, false);
+        this(targetWindow, initialOffTargetWindow, trackingWindowColour, nDivisionsInColourSide, false, false);
     }
 
     /**
@@ -49,15 +50,17 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
      * @param initialOffTargetWindow our initial window which is the same size as our initial window but centered somewhere else so as to contain only a part of the initial window
      * @param trackingWindowColour the colour of the window we will find when we process the image
      * @param nDivisionsInColourSide the number of divisions in each side of our colour cube
+     * @param normaliseColours if true the colours of the input image will be normalised before processing
      * @param noTracking if true no tracking will be done but only the initial and off-centre windows will be shown
      */
-    public ColourTrackImageProcessor(ColouredWindow targetWindow, ColouredWindow initialOffTargetWindow, int trackingWindowColour, int nDivisionsInColourSide, boolean noTracking) {
+    public ColourTrackImageProcessor(ColouredWindow targetWindow, ColouredWindow initialOffTargetWindow, int trackingWindowColour, int nDivisionsInColourSide, boolean normaliseColours, boolean noTracking) {
         checkArgs(targetWindow, initialOffTargetWindow, trackingWindowColour, nDivisionsInColourSide);
 
         this.targetWindow = targetWindow;
         this.initialOffTargetWindow = initialOffTargetWindow;
         this.trackingWindow = new ColouredWindow(initialOffTargetWindow, trackingWindowColour);
         this.trackingWindowColour = trackingWindowColour;
+        this.normaliseColours = normaliseColours;
         this.track = !noTracking;
 
         this.nSideDivs = nDivisionsInColourSide;
@@ -104,6 +107,10 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     }
 
     private void shiftTowardsTheInitialWindow(BufferedImage image) {
+        if (normaliseColours) {
+            normalizeColours(image);
+        }
+
         fillColourHistogramForWindow(image, targetWindow);
         weights = new int[trackingWindow.height + 1][trackingWindow.width + 1];
 
@@ -112,6 +119,24 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         while (notConverged && n < N_ITERATIONS_MAX) {
             notConverged = !shiftCentre(image, trackingWindow);
             n++;
+        }
+    }
+
+    private void normalizeColours(BufferedImage image) {
+        for (int j=0 ; j<image.getHeight() ; j++) {
+            for (int i=0 ; i<image.getWidth() ; i++) {
+                final int rgb = image.getRGB(i, j);
+                final int red = ColourHelper.getRed(rgb);
+                final int green = ColourHelper.getGreen(rgb);
+                final int blue = ColourHelper.getBlue(rgb);
+                final int intensity = red + green + blue;
+                if (intensity > 0) {
+                    final int r = MAX_COLOUR_VALUE_INT * red / intensity;
+                    final int g = MAX_COLOUR_VALUE_INT * green / intensity;
+                    final int b = MAX_COLOUR_VALUE_INT * blue / intensity;
+                    image.setRGB(i, j, ColourHelper.getRgb(r, g, b));
+                }
+            }
         }
     }
 
@@ -129,6 +154,10 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     // Shifts the input window towards the target window once only, producing an image with information useful for debugging.
     private void debugShift(BufferedImage image, Window window) {
+        if (normaliseColours) {
+            normalizeColours(image);
+        }
+
         fillColourHistogramForWindow(image, targetWindow);
         weights = new int[window.height + 1][window.width + 1];
 
