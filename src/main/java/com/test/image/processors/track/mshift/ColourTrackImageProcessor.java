@@ -113,7 +113,6 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
             notConverged = !shiftCentre(image, trackingWindow);
             n++;
         }
-        System.out.println("n=" + n + "  dt=" + D_PIXEL_TOLERANCE);
     }
 
     private void fillColourHistogramForWindow(BufferedImage image, Window window) {

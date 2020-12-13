@@ -62,8 +62,13 @@ public class ImageApp {
         final int green = ColourHelper.getRgb(0, 255, 0);
         final int blue = ColourHelper.getRgb(0, 0, 255);
 
-        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(395, 210, 80, 150), green);
-        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(360, 135, 80, 150), blue);
+        // images/gato.jpg
+//        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(395, 210, 80, 150), green);
+//        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(360, 135, 80, 150), blue);
+
+        // images/gato2.jpg
+        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(690, 515, 190, 190), green);
+        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(620, 445, 190, 190), blue);
 
         return new ColourTrackImageProcessor(targetWindow, initialOffCentreWindow, red, 50);
     }
