@@ -67,8 +67,12 @@ public class ImageApp {
 //        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(360, 135, 80, 150), blue);
 
         // images/gato2.jpg
-        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(690, 515, 190, 190), green);
-        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(620, 445, 190, 190), blue);
+//        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(690, 515, 190, 190), green);
+//        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(620, 445, 190, 190), blue);
+
+        // images/gato3.jpg
+        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(245, 420, 105, 90), green);
+        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(300, 460, 105, 90), blue);
 
         return new ColourTrackImageProcessor(targetWindow, initialOffCentreWindow, red, 50);
     }
