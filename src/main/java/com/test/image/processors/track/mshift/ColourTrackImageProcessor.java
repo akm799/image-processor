@@ -33,6 +33,7 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     private int x = 0;
     private int y = 0;
+    private int[][] weights;
     private ColouredWindow trackingWindow;
 
     /**
@@ -126,18 +127,21 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         }
     }
 
+    // Shifts the input window towards the target window once only, producing an image with information useful for debugging.
     private void debugShift(BufferedImage image, Window window) {
         fillColourHistogramForWindow(image, targetWindow);
-        final int[][] weights = new int[image.getHeight()][image.getWidth()];
+        weights = new int[window.height + 1][window.width + 1];
 
         // Calculate the weights.
         int maxWeight = 0;
         for (int j=window.yMin ; j<=window.yMax ; j++) {
+            final int wy = j - window.yMin;
             for (int i=window.xMin ; i<=window.xMax ; i++) {
+                final int wx = i - window.xMin;
                 final int rgb = image.getRGB(i, j);
                 final int binIndex = findBinIndexForColour(rgb);
                 final int weight = colourHistogram[binIndex];
-                weights[j][i] = weight;
+                weights[wy][wx] = weight;
                 if (weight > maxWeight) {
                     maxWeight = weight;
                 }
@@ -150,8 +154,10 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         float sumOfWeights = 0;
         final float maxWeightFloat = (float)maxWeight;
         for (int j=window.yMin ; j<=window.yMax ; j++) {
+            final int wy = j - window.yMin;
             for (int i=window.xMin ; i<=window.xMax ; i++) {
-                final float weight = weights[j][i]/maxWeightFloat;
+                final int wx = i - window.xMin;
+                final float weight = weights[wy][wx]/maxWeightFloat;
                 xSum += weight*i;
                 ySum += weight*j;
                 sumOfWeights += weight;
@@ -162,8 +168,8 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
             }
         }
 
-        final int x = Math.round(xSum/sumOfWeights);
-        final int y = Math.round(ySum/sumOfWeights);
+        x = Math.round(xSum/sumOfWeights);
+        y = Math.round(ySum/sumOfWeights);
         final int dx = x - (window.xMin + window.width/2);
         final int dy = y - (window.yMin + window.height/2);
         System.out.println("Shift: (" + dx + ", " + dy + ")");
@@ -172,7 +178,7 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         for (int j=window.yMin ; j<=window.yMax ; j++) {
             for (int i=window.xMin ; i<=window.xMax ; i++) {
                 if (j == y || x == i) {
-                    image.setRGB(i, j, ColourHelper.getRgb(255, 255, 255));
+                    image.setRGB(i, j, ColourHelper.getRgb(MAX_COLOUR_VALUE_INT, MAX_COLOUR_VALUE_INT, MAX_COLOUR_VALUE_INT));
                 }
             }
         }
