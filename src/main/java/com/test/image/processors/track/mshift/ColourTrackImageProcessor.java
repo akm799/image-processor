@@ -107,6 +107,9 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     }
 
     private void shiftTowardsTheInitialWindow(BufferedImage image) {
+        fillColourHistogramForWindow(image, targetWindow);
+        weights = new int[trackingWindow.height + 1][trackingWindow.width + 1];
+
         int n = 0;
         boolean notConverged = true;
         while (notConverged && n < N_ITERATIONS_MAX) {
@@ -137,11 +140,10 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         for (int j=window.yMin ; j<=window.yMax ; j++) {
             final int wy = j - window.yMin;
             for (int i=window.xMin ; i<=window.xMax ; i++) {
-                final int wx = i - window.xMin;
                 final int rgb = image.getRGB(i, j);
                 final int binIndex = findBinIndexForColour(rgb);
                 final int weight = colourHistogram[binIndex];
-                weights[wy][wx] = weight;
+                weights[wy][i - window.xMin] = weight;
                 if (weight > maxWeight) {
                     maxWeight = weight;
                 }
@@ -156,8 +158,7 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         for (int j=window.yMin ; j<=window.yMax ; j++) {
             final int wy = j - window.yMin;
             for (int i=window.xMin ; i<=window.xMax ; i++) {
-                final int wx = i - window.xMin;
-                final float weight = weights[wy][wx]/maxWeightFloat;
+                final float weight = weights[wy][i - window.xMin]/maxWeightFloat;
                 xSum += weight*i;
                 ySum += weight*j;
                 sumOfWeights += weight;
@@ -185,25 +186,40 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     }
 
     private boolean shiftCentre(BufferedImage image, Window window) {
-        int xSum = 0;
-        int ySum = 0;
-        int weightSum = 0;
-
+        // Calculate the weights.
+        int maxWeight = 0;
         for (int j=window.yMin ; j<=window.yMax ; j++) {
+            final int wy = j - window.yMin;
             for (int i=window.xMin ; i<=window.xMax ; i++) {
                 final int rgb = image.getRGB(i, j);
                 final int binIndex = findBinIndexForColour(rgb);
                 final int weight = colourHistogram[binIndex];
-                xSum += weight * i;
-                ySum += weight * j;
-                weightSum += weight;
+                weights[wy][i - window.xMin] = weight;
+                if (weight > maxWeight) {
+                    maxWeight = weight;
+                }
             }
         }
 
-        final int x = xSum/weightSum;
-        final int y = ySum/weightSum;
-        final int dx = x - this.x;
-        final int dy = y - this.y;
+        // Calculate the weighted sums.
+        int xSum = 0;
+        int ySum = 0;
+        float sumOfWeights = 0;
+        final float maxWeightFloat = (float)maxWeight;
+        for (int j=window.yMin ; j<=window.yMax ; j++) {
+            final int wy = j - window.yMin;
+            for (int i=window.xMin ; i<=window.xMax ; i++) {
+                final float weight = weights[wy][i - window.xMin]/maxWeightFloat;
+                xSum += weight*i;
+                ySum += weight*j;
+                sumOfWeights += weight;
+            }
+        }
+
+        final int x = Math.round(xSum/sumOfWeights);
+        final int y = Math.round(ySum/sumOfWeights);
+        final int dx = x - (window.xMin + window.width/2);
+        final int dy = y - (window.yMin + window.height/2);
 
         this.x = x;
         this.y = y;
