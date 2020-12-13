@@ -17,7 +17,7 @@ import java.util.Collection;
 public final class ColourTrackImageProcessor extends AbstractFileImageProcessor  {
     private static final int MAX_COLOUR_VALUE_INT = 255;
     private static final float MAX_COLOUR_VALUE = (float)MAX_COLOUR_VALUE_INT;
-    private static final int D_PIXEL_TOLERANCE = 3;
+    private static final int D_PIXEL_TOLERANCE = 0;
     private static final int N_ITERATIONS_MAX = 100;
 
     private final ColouredWindow targetWindow;
@@ -93,17 +93,16 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     @Override
     public BufferedImage processImage(BufferedImage image) {
+        /*
         debugShift(image, initialOffTargetWindow);
 
         return image;
-        /*
+         */
         if (track) {
-            fillColourHistogramForWindow(image, initialWindow);
             shiftTowardsTheInitialWindow(image);
         }
 
         return composeFinalImage(image);
-         */
     }
 
     private void shiftTowardsTheInitialWindow(BufferedImage image) {
@@ -116,6 +115,7 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
             notConverged = !shiftCentre(image, trackingWindow);
             n++;
         }
+        System.out.println("n=" + n + "  dt=" + D_PIXEL_TOLERANCE);
     }
 
     private void fillColourHistogramForWindow(BufferedImage image, Window window) {

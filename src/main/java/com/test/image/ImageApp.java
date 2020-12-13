@@ -62,10 +62,10 @@ public class ImageApp {
         final int green = ColourHelper.getRgb(0, 255, 0);
         final int blue = ColourHelper.getRgb(0, 0, 255);
 
-        final ColouredWindow initialWindow = new ColouredWindow(new Rectangle(395, 210, 80, 150), green);
-        final ColouredWindow offCentreWindow = new ColouredWindow(new Rectangle(360, 135, 80, 150), blue);
+        final ColouredWindow targetWindow = new ColouredWindow(new Rectangle(395, 210, 80, 150), green);
+        final ColouredWindow initialOffCentreWindow = new ColouredWindow(new Rectangle(360, 135, 80, 150), blue);
 
-        return new ColourTrackImageProcessor(initialWindow, offCentreWindow, red, 51);
+        return new ColourTrackImageProcessor(targetWindow, initialOffCentreWindow, red, 50);
     }
 
     private FileImageProcessor getSearchImageProcessorOld() throws IOException {
