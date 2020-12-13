@@ -20,8 +20,8 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     private static final int D_PIXEL_TOLERANCE = 3;
     private static final int N_ITERATIONS_MAX = 100;
 
-    private final ColouredWindow initialWindow;
-    private final ColouredWindow offCentreWindow;
+    private final ColouredWindow targetWindow;
+    private final ColouredWindow initialOffTargetWindow;
     private final int trackingWindowColour;
 
     private final int nSideDivs;
@@ -36,28 +36,28 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
     private ColouredWindow trackingWindow;
 
     /**
-     * @param initialWindow the window which we want to track
-     * @param offCentreWindow our initial window which is the same size as our initial window but centered somewhere else so as to contain only a part of the initial window
+     * @param targetWindow the window which we want to track
+     * @param initialOffTargetWindow our initial window which is the same size as our initial window but centered somewhere else so as to contain only a part of the initial window
      * @param trackingWindowColour the colour of the window we will find when we process the image
      * @param nDivisionsInColourSide the number of divisions in each side of our colour cube
      */
-    public ColourTrackImageProcessor(ColouredWindow initialWindow, ColouredWindow offCentreWindow, int trackingWindowColour, int nDivisionsInColourSide) {
-        this(initialWindow, offCentreWindow, trackingWindowColour, nDivisionsInColourSide, false);
+    public ColourTrackImageProcessor(ColouredWindow targetWindow, ColouredWindow initialOffTargetWindow, int trackingWindowColour, int nDivisionsInColourSide) {
+        this(targetWindow, initialOffTargetWindow, trackingWindowColour, nDivisionsInColourSide, false);
     }
 
     /**
-     * @param initialWindow the window which we want to track
-     * @param offCentreWindow our initial window which is the same size as our initial window but centered somewhere else so as to contain only a part of the initial window
+     * @param targetWindow the window which we want to track
+     * @param initialOffTargetWindow our initial window which is the same size as our initial window but centered somewhere else so as to contain only a part of the initial window
      * @param trackingWindowColour the colour of the window we will find when we process the image
      * @param nDivisionsInColourSide the number of divisions in each side of our colour cube
      * @param noTracking if true no tracking will be done but only the initial and off-centre windows will be shown
      */
-    public ColourTrackImageProcessor(ColouredWindow initialWindow, ColouredWindow offCentreWindow, int trackingWindowColour, int nDivisionsInColourSide, boolean noTracking) {
-        checkArgs(initialWindow, offCentreWindow, trackingWindowColour, nDivisionsInColourSide);
+    public ColourTrackImageProcessor(ColouredWindow targetWindow, ColouredWindow initialOffTargetWindow, int trackingWindowColour, int nDivisionsInColourSide, boolean noTracking) {
+        checkArgs(targetWindow, initialOffTargetWindow, trackingWindowColour, nDivisionsInColourSide);
 
-        this.initialWindow = initialWindow;
-        this.offCentreWindow = offCentreWindow;
-        this.trackingWindow = new ColouredWindow(offCentreWindow, trackingWindowColour);
+        this.targetWindow = targetWindow;
+        this.initialOffTargetWindow = initialOffTargetWindow;
+        this.trackingWindow = new ColouredWindow(initialOffTargetWindow, trackingWindowColour);
         this.trackingWindowColour = trackingWindowColour;
         this.track = !noTracking;
 
@@ -92,18 +92,23 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     @Override
     public BufferedImage processImage(BufferedImage image) {
+        debugShift(image, initialOffTargetWindow);
+
+        return image;
+        /*
         if (track) {
+            fillColourHistogramForWindow(image, initialWindow);
             shiftTowardsTheInitialWindow(image);
         }
 
         return composeFinalImage(image);
+         */
     }
 
     private void shiftTowardsTheInitialWindow(BufferedImage image) {
         int n = 0;
         boolean notConverged = true;
         while (notConverged && n < N_ITERATIONS_MAX) {
-            fillColourHistogramForWindow(image, trackingWindow);
             notConverged = !shiftCentre(image, trackingWindow);
             n++;
         }
@@ -117,6 +122,58 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
                 final int rgb = image.getRGB(i, j);
                 final int binIndex = findBinIndexForColour(rgb);
                 colourHistogram[binIndex]++;
+            }
+        }
+    }
+
+    private void debugShift(BufferedImage image, Window window) {
+        fillColourHistogramForWindow(image, targetWindow);
+        final int[][] weights = new int[image.getHeight()][image.getWidth()];
+
+        // Calculate the weights.
+        int maxWeight = 0;
+        for (int j=window.yMin ; j<=window.yMax ; j++) {
+            for (int i=window.xMin ; i<=window.xMax ; i++) {
+                final int rgb = image.getRGB(i, j);
+                final int binIndex = findBinIndexForColour(rgb);
+                final int weight = colourHistogram[binIndex];
+                weights[j][i] = weight;
+                if (weight > maxWeight) {
+                    maxWeight = weight;
+                }
+            }
+        }
+
+        // Calculate the weighted sums.
+        int xSum = 0;
+        int ySum = 0;
+        float sumOfWeights = 0;
+        final float maxWeightFloat = (float)maxWeight;
+        for (int j=window.yMin ; j<=window.yMax ; j++) {
+            for (int i=window.xMin ; i<=window.xMax ; i++) {
+                final float weight = weights[j][i]/maxWeightFloat;
+                xSum += weight*i;
+                ySum += weight*j;
+                sumOfWeights += weight;
+
+                // Paint the window pixels in grayscale using the weight as the intensity, for debugging purposes.
+                final int scale = Math.round(MAX_COLOUR_VALUE_INT*weight);
+                image.setRGB(i, j, ColourHelper.getRgb(scale, scale, scale));
+            }
+        }
+
+        final int x = Math.round(xSum/sumOfWeights);
+        final int y = Math.round(ySum/sumOfWeights);
+        final int dx = x - (window.xMin + window.width/2);
+        final int dy = y - (window.yMin + window.height/2);
+        System.out.println("Shift: (" + dx + ", " + dy + ")");
+
+        // Draw the new, shifted, centre for debugging purposes.
+        for (int j=window.yMin ; j<=window.yMax ; j++) {
+            for (int i=window.xMin ; i<=window.xMax ; i++) {
+                if (j == y || x == i) {
+                    image.setRGB(i, j, ColourHelper.getRgb(255, 255, 255));
+                }
             }
         }
     }
@@ -174,9 +231,9 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     private Collection<ColouredWindow> assembleDisplayWindows() {
         if (track) {
-            return Arrays.asList(initialWindow, offCentreWindow, trackingWindow);
+            return Arrays.asList(targetWindow, initialOffTargetWindow, trackingWindow);
         } else {
-            return Arrays.asList(initialWindow, offCentreWindow);
+            return Arrays.asList(targetWindow, initialOffTargetWindow);
         }
     }
 }

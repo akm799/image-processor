@@ -19,6 +19,7 @@ import com.test.image.processors.sharp.UsmImageProcessor;
 import com.test.image.processors.track.IterativeTrackImageProcessor;
 import com.test.image.processors.track.SearchImageProcessor;
 import com.test.image.processors.track.TopSimilarityImageProcessor;
+import com.test.image.processors.track.mshift.ColourTrackImageProcessor;
 import com.test.image.processors.var.VariationsImageProcessor;
 import com.test.image.processors.window.ColouredWindow;
 import com.test.image.processors.window.WindowImageProcessor;
@@ -37,7 +38,7 @@ public class ImageApp {
     private ImageApp() {}
 
     private FileImageProcessor getImageProcessor(String[] args) throws IOException {
-        return getCircleQrCodeImageProcessor(args[2]);
+        return getColourTrackingImageProcessor();
     }
 
     private FileImageProcessor getCircleQrCodeImageProcessor(String logoFileName) {
@@ -56,7 +57,18 @@ public class ImageApp {
         return new SquareToCircleImageProcessor();
     }
 
-    private FileImageProcessor getSearchImageProcessor() throws IOException {
+    private FileImageProcessor getColourTrackingImageProcessor() throws IOException {
+        final int red = ColourHelper.getRgb(255, 0, 0);
+        final int green = ColourHelper.getRgb(0, 255, 0);
+        final int blue = ColourHelper.getRgb(0, 0, 255);
+
+        final ColouredWindow initialWindow = new ColouredWindow(new Rectangle(395, 210, 80, 150), green);
+        final ColouredWindow offCentreWindow = new ColouredWindow(new Rectangle(360, 135, 80, 150), blue);
+
+        return new ColourTrackImageProcessor(initialWindow, offCentreWindow, red, 51);
+    }
+
+    private FileImageProcessor getSearchImageProcessorOld() throws IOException {
         final int red = ColourHelper.getRgb(255, 0, 0);
         final int green = ColourHelper.getRgb(0, 255, 0);
 
