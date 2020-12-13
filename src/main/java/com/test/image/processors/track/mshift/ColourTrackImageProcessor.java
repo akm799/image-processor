@@ -31,8 +31,6 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
 
     private final boolean track;
 
-    private int x = 0;
-    private int y = 0;
     private int[][] weights;
     private ColouredWindow trackingWindow;
 
@@ -169,8 +167,8 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
             }
         }
 
-        x = Math.round(xSum/sumOfWeights);
-        y = Math.round(ySum/sumOfWeights);
+        final int x = Math.round(xSum/sumOfWeights);
+        final int y = Math.round(ySum/sumOfWeights);
         final int dx = x - (window.xMin + window.width/2);
         final int dy = y - (window.yMin + window.height/2);
         System.out.println("Shift: (" + dx + ", " + dy + ")");
@@ -220,9 +218,6 @@ public final class ColourTrackImageProcessor extends AbstractFileImageProcessor 
         final int y = Math.round(ySum/sumOfWeights);
         final int dx = x - (window.xMin + window.width/2);
         final int dy = y - (window.yMin + window.height/2);
-
-        this.x = x;
-        this.y = y;
         this.trackingWindow = new ColouredWindow(trackingWindow.shift(dx, dy), trackingWindowColour);
 
         return (Math.abs(dx) <= D_PIXEL_TOLERANCE && Math.abs(dy) <= D_PIXEL_TOLERANCE);
