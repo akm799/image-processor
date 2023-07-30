@@ -20,7 +20,7 @@ public final class CornerImageProcessor extends AbstractFileImageProcessor {
     @Override
     public BufferedImage processImage(BufferedImage image) {
         final GrayScaleImage input = new GrayScaleImage(image);
-        final ImageDataProcessor imageDataProcessor = new CornerImageDataProcessor(6);
+        final ImageDataProcessor imageDataProcessor = new CornerImageDataProcessor(30);
         final GrayScaleImage cornerPixels = imageDataProcessor.processImage(input);
         final ImageProcessor superImposeCornerPixels = new SuperImpositionImageProcessor(cornerPixels);
 
