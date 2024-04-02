@@ -6,20 +6,22 @@ public final class KernelGenerator {
 
     public static void main(String[] args) {
         final KernelGenerator kg = new KernelGenerator();
-
-        final int[][] k1 = kg.generateKernel(3);
-        final Kernel kernel1 = new Kernel(k1);
-        System.out.println(kernel1);
+        print(kg, 3);
         System.out.println();
 
-        final int[][] k2 = kg.generateKernel(5);
-        final Kernel kernel2 = new Kernel(k2);
-        System.out.println(kernel2);
+        print(kg, 5);
         System.out.println();
 
-        final int[][] k3 = kg.generateKernel(7);
-        final Kernel kernel3 = new Kernel(k3);
-        System.out.println(kernel3);
+        print(kg, 7);
+        System.out.println();
+
+        print(kg, 31);
+    }
+
+    private static void print(KernelGenerator kg, int size) {
+        final int[][] k = kg.generateKernel(size);
+        final Kernel kernel = new Kernel(k);
+        System.out.println(kernel);
     }
 
     private int[][] generateKernel(int size) {
