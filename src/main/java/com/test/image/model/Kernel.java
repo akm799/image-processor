@@ -5,10 +5,35 @@ public final class Kernel {
     private final int[][] k;
 
     public Kernel(int[][] k) {
+        checkValues(k);
+
         this.sum = sum(k);
         final int n = k[0].length;
         this.k = new int[n][n];
         System.arraycopy(k, 0, this.k, 0, n);
+    }
+
+    private void checkValues(int[][] k) {
+        if (k == null) {
+            throw new IllegalArgumentException("Null input array.");
+        }
+
+        if (k.length == 0) {
+            throw new IllegalArgumentException("Empty input array.");
+        }
+
+        final int n = k.length;
+        for (int[] r : k) {
+            if (r == null || r.length != n) {
+                throw new IllegalArgumentException("Input array is not a square one.");
+            }
+
+            for (int v : r) {
+                if (v < 0) {
+                    throw new IllegalArgumentException("Illegal kernel cell value " + v + ". It cannot be negative.");
+                }
+            }
+        }
     }
 
     private int sum(int[][] k) {

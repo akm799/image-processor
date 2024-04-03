@@ -3,28 +3,37 @@ package com.test.image.processors.blur;
 import com.test.image.model.Kernel;
 
 public final class KernelGenerator {
+    private static final int MIN_SIZE = 3;
 
     public static void main(String[] args) {
-        final KernelGenerator kg = new KernelGenerator();
-        print(kg, 3);
+        final KernelGenerator underTest = new KernelGenerator();
+        print(underTest, 3);
         System.out.println();
 
-        print(kg, 5);
+        print(underTest, 5);
         System.out.println();
 
-        print(kg, 7);
+        print(underTest, 7);
         System.out.println();
 
-        print(kg, 31);
+        print(underTest, 31);
     }
 
-    private static void print(KernelGenerator kg, int size) {
-        final int[][] k = kg.generateKernel(size);
-        final Kernel kernel = new Kernel(k);
+    private static void print(KernelGenerator underTest, int size) {
+        final Kernel kernel = underTest.gaussianKernel(size);
         System.out.println(kernel);
     }
 
-    private int[][] generateKernel(int size) {
+
+    Kernel gaussianKernel(int size) {
+        if (size < MIN_SIZE) {
+            throw new IllegalArgumentException("Illegal kernel size: " + size + ". It must be an odd number greater than or equal to " + MIN_SIZE + ".");
+        }
+
+        return new Kernel(gaussianValues(size));
+    }
+
+    private int[][] gaussianValues(int size) {
         final int r = size/2 + size%2;
         final double s = r/3.0;
 
