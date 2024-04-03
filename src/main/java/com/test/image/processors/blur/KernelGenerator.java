@@ -6,6 +6,26 @@ public final class KernelGenerator {
     private static final int MIN_SIZE = 3;
 
     public static void main(String[] args) {
+        final int n = 3;
+        final int[][] q = new int[n][n];
+        for (int j=0 ; j<n ; j++) {
+            for (int i=0 ; i<n; i++) {
+                q[j][i] = 10*j + i;
+            }
+        }
+        System.out.println(new Kernel(q));
+        System.out.println("\n");
+
+        final int[][] k = (new KernelGenerator()).fullKernel(q);
+        for (int j=0 ; j<k.length ; j++) {
+            for (int i=0 ; i<k[j].length ; i++) {
+                System.out.print(k[j][j]);
+                System.out.print(' ');
+            }
+            System.out.println();
+        }
+
+        /*
         final KernelGenerator underTest = new KernelGenerator();
         print(underTest, 3);
         System.out.println();
@@ -17,6 +37,7 @@ public final class KernelGenerator {
         System.out.println();
 
         print(underTest, 31);
+         */
     }
 
     private static void print(KernelGenerator underTest, int size) {
@@ -59,5 +80,46 @@ public final class KernelGenerator {
         final double c = 2*s*s;
 
         return Math.exp(-(x*x + y*y)/c)/(Math.PI*c);
+    }
+
+    private int[][] fullKernel(int[][] q) {
+        final int m = 2*(q.length - 1) + 1;
+        final int[][] k = new int[m][m];
+        fillFullKernel(q, k);
+
+        return k;
+    }
+
+    private void fillFullKernel(int[][] q, int[][] k) {
+        final int n = q.length;
+        final int c = n - 1;
+
+        // Top Right
+        for (int j=0 ; j<n ; j++) {
+            for (int i=0 ; i<n ; i++) {
+                k[c-j][c+i] = q[j][i];
+            }
+        }
+
+        // Bottom Right
+        for (int j=1 ; j<n ; j++) {
+            for (int i=0 ; i<n ; i++) {
+                k[c+j][c+i] = q[j][i];
+            }
+        }
+
+        // Top Left
+        for (int j=0 ; j<n ; j++) {
+            for (int i=1 ; i<n ; i++) {
+                k[c-j][c-i] = q[j][i];
+            }
+        }
+
+        // Bottom Left
+        for (int j=1 ; j<n ; j++) {
+            for (int i=1 ; i<n ; i++) {
+                k[c+j][c-i] = q[j][i];
+            }
+        }
     }
 }
