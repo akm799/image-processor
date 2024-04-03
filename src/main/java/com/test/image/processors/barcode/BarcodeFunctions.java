@@ -1,6 +1,8 @@
 package com.test.image.processors.barcode;
 
 import com.test.image.model.GrayScaleImage;
+import com.test.image.model.Kernel;
+import com.test.image.processors.blur.KernelGenerator;
 
 final class BarcodeFunctions {
 
@@ -51,46 +53,48 @@ final class BarcodeFunctions {
     }
 
     GrayScaleImage smooth(GrayScaleImage data) {
-        gaussianFilter(data, 31);
-        return meanFilter(data, 31);
-    }
+        final int kernelSize = 31;
 
-    private GrayScaleImage meanFilter(GrayScaleImage data, int size) {
-        final int w = data.getWidth();
-        final int h = data.getHeight();
-        final GrayScaleImage smooth = new GrayScaleImage(w, h);
-
-        for (int j=0 ; j<h ; j++) {
-            for (int i=0 ; i<w ; i++) {
-                final int v = meanFilter(data, size, w, h, i, j);
-                smooth.setPixel(i, j, v);
-            }
-        }
-
-        return smooth;
-    }
-
-    private int meanFilter(GrayScaleImage data, int size, int w, int h, int x, int y) {
-        final int top = y - size + 1;
-        final int left = x - size + 1;
-        final int yMaxExclusive = top + size;
-        final int xMaxExclusive = left + size;
-
-        int s = 0;
-        for (int j=top ; j<yMaxExclusive ; j++) {
-            for (int i=left ; i<xMaxExclusive ; i++) {
-                s += getSafePixel(data, w, h, i, j);
-            }
-        }
-
-        return Math.round(s/(size*(float)size));
+        return gaussianFilter(data, kernelSize);
     }
 
     /**
      * https://nishatlea.medium.com/finding-out-the-values-of-a-gaussian-kernel-in-image-processing-9caaf213b4ab
      */
     private GrayScaleImage gaussianFilter(GrayScaleImage data, int size) {
-        return null;//TODO
+        final Kernel kernel = (new KernelGenerator()).gaussianKernel(size);
+        final GrayScaleImage smooth = new GrayScaleImage(data.getWidth(), data.getHeight());
+        gaussianFilter(data, kernel, smooth);
+
+        return smooth;
+    }
+
+    private void gaussianFilter(GrayScaleImage source, Kernel kernel, GrayScaleImage target) {
+        final int w = source.getWidth();
+        final int h = source.getHeight();
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                target.setPixel(i, j, gaussianFilter(source, kernel, i, j));
+            }
+        }
+    }
+
+    private int gaussianFilter(GrayScaleImage source, Kernel kernel, int x, int y) {
+        final int s = kernel.getSize();
+        final int halfSize = s/2;
+        final int minX = x - halfSize;
+        final int minY = y - halfSize;
+        final int w = source.getWidth();
+        final int h = source.getHeight();
+
+        int sum = 0;
+        for (int j=0 ; j<s ; j++) {
+            for (int i=0 ; i<s ; i++) {
+                sum += kernel.getValue(i, j) * getSafePixel(source, w, h, minX + i, minY + j);
+            }
+        }
+
+        return Math.round(sum/(float)kernel.getSum());
     }
 
     private int getSafePixel(GrayScaleImage data, int w, int h, int x, int y) {
