@@ -25,7 +25,7 @@ public final class KernelGenerator {
     }
 
 
-    Kernel gaussianKernel(int size) {
+    public Kernel gaussianKernel(int size) {
         if (size < MIN_SIZE) {
             throw new IllegalArgumentException("Illegal kernel size: " + size + ". It must be an odd number greater than or equal to " + MIN_SIZE + ".");
         }
