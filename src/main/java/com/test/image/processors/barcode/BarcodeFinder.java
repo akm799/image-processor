@@ -31,7 +31,8 @@ public final class BarcodeFinder {
         final GrayScaleImage data = new GrayScaleImage(photo);
         final GrayScaleImage gradient = functions.gradient(data);
         final GrayScaleImage smooth = functions.smooth(gradient);
-        debug(smooth);
+        final GrayScaleImage binary = functions.binary(smooth);
+        debug(binary);
     }
 
     private void debug(GrayScaleImage data) {

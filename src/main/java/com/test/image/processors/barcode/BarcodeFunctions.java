@@ -53,13 +53,13 @@ final class BarcodeFunctions {
     }
 
     GrayScaleImage smooth(GrayScaleImage data) {
-        final int kernelSize = 31;
+        final int kernelSize = 51;
 
         return gaussianFilter(data, kernelSize);
     }
 
     /**
-     * https://nishatlea.medium.com/finding-out-the-values-of-a-gaussian-kernel-in-image-processing-9caaf213b4ab
+     * <a href="https://nishatlea.medium.com/finding-out-the-values-of-a-gaussian-kernel-in-image-processing-9caaf213b4ab">Barcode Detection Reference Implementation</a>
      */
     private GrayScaleImage gaussianFilter(GrayScaleImage data, int size) {
         final Kernel kernel = (new KernelGenerator()).gaussianKernel(size);
@@ -78,6 +78,22 @@ final class BarcodeFunctions {
                 target.setPixel(i, j, c);
             }
         }
+    }
+
+    GrayScaleImage binary(GrayScaleImage image) {
+        final int threshold = 10;
+        final int w = image.getWidth();
+        final int h = image.getHeight();
+        final GrayScaleImage binary = new GrayScaleImage(w, h);
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                if (image.getPixel(i, j) > threshold) {
+                    binary.setPixel(i, j, 255);
+                }
+            }
+        }
+
+        return binary;
     }
 
     private int getSafePixel(GrayScaleImage data, int w, int h, int x, int y) {
