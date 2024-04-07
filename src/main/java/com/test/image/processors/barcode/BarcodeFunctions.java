@@ -15,18 +15,41 @@ final class BarcodeFunctions {
         final int hs = h/2 + h%2;
         final GrayScaleImage scaled = new GrayScaleImage(ws, hs);
 
-        for (int j=0 ; j<=h ; j += 2) {
-            for (int i=0 ; i<=w ; i += 2) {
-                if (i<w && j<h) {
-                    final int s = data.getPixel(i, j) + data.getPixel(i+ 1, j) + data.getPixelIndex(i, j+ 1) + data.getPixelIndex(i+1, j+1);
-                    scaled.setPixel(i/2, j/2, Math.round(s/4f));
-                } else {
-                    //TODO
-                }
+        for (int j=0 ; j<h ; j += 2) {
+            for (int i=0 ; i<w ; i += 2) {
+                final int a = getAverage(data, w, h, i, j, i+1,  j,  i, j+1, i+1, j+1);
+                scaled.setPixel(i/2, j/2, a);
             }
         }
 
         return scaled;
+    }
+
+    private int getAverage(GrayScaleImage data, int w, int h, int x1, int y1, int x2, int y2, int x3, int y3, int x4, int y4) {
+        int s = 0;
+        float c = 0f;
+
+        if (0 <= x1 && x1 < w && 0 <= y1 && y1 < h) {
+            s += data.getPixel(x1, y1);
+            c++;
+        }
+
+        if (0 <= x2 && x2 < w && 0 <= y2 && y2 < h) {
+            s += data.getPixel(x2, y2);
+            c++;
+        }
+
+        if (0 <= x3 && x3 < w && 0 <= y3 && y3 < h) {
+            s += data.getPixel(x3, y3);
+            c++;
+        }
+
+        if (0 <= x4 && x4 < w && 0 <= y4 && y4 < h) {
+            s += data.getPixel(x4, y4);
+            c++;
+        }
+
+        return Math.round(s/c);
     }
 
     GrayScaleImage gradient(GrayScaleImage data) {
