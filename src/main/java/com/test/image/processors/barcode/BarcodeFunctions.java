@@ -74,7 +74,7 @@ final class BarcodeFunctions {
         final int h = source.getHeight();
         for (int j=0 ; j<h ; j++) {
             for (int i=0 ; i<w ; i++) {
-                final int c = kernel.apply(source, w, h, i, j);
+                final int c = kernel.applyMirror(source, w, h, i, j);
                 target.setPixel(i, j, c);
             }
         }

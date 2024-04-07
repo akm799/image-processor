@@ -54,7 +54,7 @@ public final class Kernel {
      * Applies this kernel to the input image for the input pixel and mirrors
      * any pixels that fall outside the input image.
      */
-    public int apply(GrayScaleImage image, int w, int h, int x, int y) {
+    public int applyMirror(GrayScaleImage image, int w, int h, int x, int y) {
         final int minX = x - n2;
         final int minY = y - n2;
 

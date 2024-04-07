@@ -53,7 +53,7 @@ public class KernelTest {
         final int w = imageData[0].length;
         final int h = imageData.length;
         final GrayScaleImage image = toImage(imageData);
-        final int actual = underTest.apply(image, w, h, x, y);
+        final int actual = underTest.applyMirror(image, w, h, x, y);
         Assert.assertEquals(expected, actual);
     }
 
