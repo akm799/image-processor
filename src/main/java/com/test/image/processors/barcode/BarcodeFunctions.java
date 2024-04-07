@@ -76,7 +76,7 @@ final class BarcodeFunctions {
     }
 
     GrayScaleImage smooth(GrayScaleImage data) {
-        final int kernelSize = 51;
+        final int kernelSize = 43;
 
         return gaussianFilter(data, kernelSize);
     }
