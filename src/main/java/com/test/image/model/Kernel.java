@@ -67,8 +67,9 @@ public final class Kernel {
 
         int t = 0;
         for (int j=0 ; j<n ; j++) {
+            final int yp = minY + j;
             for (int i=0 ; i<n ; i++) {
-                t += k[j][i] * getSafePixel(image, w, h, minX + i, minY + j);
+                t += k[j][i] * getSafePixel(image, w, h, minX + i, yp);
             }
         }
 
