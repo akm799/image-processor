@@ -74,27 +74,10 @@ final class BarcodeFunctions {
         final int h = source.getHeight();
         for (int j=0 ; j<h ; j++) {
             for (int i=0 ; i<w ; i++) {
-                target.setPixel(i, j, gaussianFilter(source, kernel, i, j));
+                final int c = kernel.apply(source, i, j);
+                target.setPixel(i, j, c);
             }
         }
-    }
-
-    private int gaussianFilter(GrayScaleImage source, Kernel kernel, int x, int y) {
-        final int s = kernel.getSize();
-        final int halfSize = s/2;
-        final int minX = x - halfSize;
-        final int minY = y - halfSize;
-        final int w = source.getWidth();
-        final int h = source.getHeight();
-
-        int sum = 0;
-        for (int j=0 ; j<s ; j++) {
-            for (int i=0 ; i<s ; i++) {
-                sum += kernel.getValue(i, j) * getSafePixel(source, w, h, minX + i, minY + j);
-            }
-        }
-
-        return Math.round(sum/(float)kernel.getSum());
     }
 
     private int getSafePixel(GrayScaleImage data, int w, int h, int x, int y) {

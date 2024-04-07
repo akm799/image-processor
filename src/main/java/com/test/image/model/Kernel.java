@@ -1,6 +1,8 @@
 package com.test.image.model;
 
 public final class Kernel {
+    public static final int MIN_SIZE = 3;
+
     private final int sum;
     private final int[][] k;
 
@@ -18,14 +20,23 @@ public final class Kernel {
             throw new IllegalArgumentException("Null input array.");
         }
 
-        if (k.length == 0) {
+        final int n = k.length;
+
+        if (n == 0) {
             throw new IllegalArgumentException("Empty input array.");
         }
 
-        final int n = k.length;
+        if (n < MIN_SIZE) {
+            throw new IllegalArgumentException("The input array of size " + n + " is less than the minimum allowed size of " + MIN_SIZE + ".");
+        }
+
+        if (n%2 == 0) {
+            throw new IllegalArgumentException("The size " + n + " of the input array is not an odd number.");
+        }
+
         for (int[] r : k) {
             if (r == null || r.length != n) {
-                throw new IllegalArgumentException("Input array is not a square one.");
+                throw new IllegalArgumentException("The input array is not a square one.");
             }
 
             for (int v : r) {
@@ -48,16 +59,8 @@ public final class Kernel {
         return sum;
     }
 
-    public int getSize() {
-        return k[0].length;
-    }
-
-    public int getValue(int i, int j) {
-        return k[j][i];
-    }
-
-    public int getSum() {
-        return sum;
+    public int apply(GrayScaleImage image, int x, int y) {
+        return 0; //TODO
     }
 
     @Override
@@ -70,45 +73,19 @@ public final class Kernel {
 
     private void toString(StringBuffer sb) {
         final String[][] s = toStrings(k);
-        final int n = s[0].length;
 
-        // Top
-        for (int j=n-1 ; j>=0 ; j--) {
-            // Top Left
-            for (int i=n-1 ; i>0 ; i--) {
-                sb.append(s[j][i]);
-                sb.append(' ');
-            }
-
-            // Top Right
+        final int n = k.length;
+        for (int j=0 ; j<n ; j++) {
             for (int i=0 ; i<n ; i++) {
                 sb.append(s[j][i]);
                 sb.append(' ');
             }
-
-            sb.append('\n');
-        }
-
-        // Bottom
-        for (int j=1 ; j<n ; j++) {
-            // Bottom Left
-            for (int i=n-1 ; i>0 ; i--) {
-                sb.append(s[j][i]);
-                sb.append(' ');
-            }
-
-            // Bottom Right
-            for (int i=0 ; i<n ; i++) {
-                sb.append(s[j][i]);
-                sb.append(' ');
-            }
-
             sb.append('\n');
         }
     }
 
     private String[][] toStrings(int[][] k) {
-        final int n = k[0].length;
+        final int n = k.length;
         final int maxLen = maxLen(k);
         final String[][] result = new String[n][n];
         final StringBuffer sb = new StringBuffer(maxLen);

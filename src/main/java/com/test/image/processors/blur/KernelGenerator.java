@@ -3,29 +3,8 @@ package com.test.image.processors.blur;
 import com.test.image.model.Kernel;
 
 public final class KernelGenerator {
-    private static final int MIN_SIZE = 3;
 
     public static void main(String[] args) {
-        final int n = 3;
-        final int[][] q = new int[n][n];
-        for (int j=0 ; j<n ; j++) {
-            for (int i=0 ; i<n; i++) {
-                q[j][i] = 10*j + i;
-            }
-        }
-        System.out.println(new Kernel(q));
-        System.out.println("\n");
-
-        final int[][] k = (new KernelGenerator()).fullKernel(q);
-        for (int j=0 ; j<k.length ; j++) {
-            for (int i=0 ; i<k[j].length ; i++) {
-                System.out.print(k[j][j]);
-                System.out.print(' ');
-            }
-            System.out.println();
-        }
-
-        /*
         final KernelGenerator underTest = new KernelGenerator();
         print(underTest, 3);
         System.out.println();
@@ -37,7 +16,6 @@ public final class KernelGenerator {
         System.out.println();
 
         print(underTest, 31);
-         */
     }
 
     private static void print(KernelGenerator underTest, int size) {
@@ -47,11 +25,14 @@ public final class KernelGenerator {
 
 
     public Kernel gaussianKernel(int size) {
-        if (size < MIN_SIZE) {
-            throw new IllegalArgumentException("Illegal kernel size: " + size + ". It must be an odd number greater than or equal to " + MIN_SIZE + ".");
+        if (size < Kernel.MIN_SIZE) {
+            throw new IllegalArgumentException("Illegal kernel size: " + size + ". It must be an odd number greater than or equal to " + Kernel.MIN_SIZE + ".");
         }
 
-        return new Kernel(gaussianValues(size));
+        final int[][] q = gaussianValues(size);
+        final int[][] k = fullKernel(q);
+
+        return new Kernel(k);
     }
 
     private int[][] gaussianValues(int size) {
