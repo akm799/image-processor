@@ -1,6 +1,8 @@
 package com.test.image.model;
 
 public final class Kernel {
+    public static final int MIN_SIZE = 3;
+
     private final int n;
     private final int n2;
     private final float sum;
@@ -24,6 +26,14 @@ public final class Kernel {
         final int n = k.length;
         if (n == 0) {
             throw new IllegalArgumentException("Empty input array.");
+        }
+
+        if (n < MIN_SIZE) {
+            throw new IllegalArgumentException("Illegal input array size: " + n + ". It must be an odd number greater than or equal to " + MIN_SIZE + ".");
+        }
+
+        if (n%2 == 0) {
+            throw new IllegalArgumentException("Illegal input array size: " + n + ". It must be an odd number.");
         }
 
         for (int[] r : k) {

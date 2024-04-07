@@ -3,7 +3,6 @@ package com.test.image.processors.blur;
 import com.test.image.model.Kernel;
 
 public final class KernelGenerator {
-    private static final int MIN_SIZE = 3;
 
     public static void main(String[] args) {
         final KernelGenerator underTest = new KernelGenerator();
@@ -35,8 +34,8 @@ public final class KernelGenerator {
     }
 
     private void checkSize(int size) {
-        if (size < MIN_SIZE) {
-            throw new IllegalArgumentException("Illegal kernel size: " + size + ". It must be an odd number greater than or equal to " + MIN_SIZE + ".");
+        if (size < Kernel.MIN_SIZE) {
+            throw new IllegalArgumentException("Illegal kernel size: " + size + ". It must be an odd number greater than or equal to " + Kernel.MIN_SIZE + ".");
         }
 
         if (size%2 == 0) {
