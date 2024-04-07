@@ -52,6 +52,39 @@ final class BarcodeFunctions {
         return Math.round(s/c);
     }
 
+    GrayScaleImage contrast(GrayScaleImage data) {
+        final int w = data.getWidth();
+        final int h = data.getHeight();
+        final GrayScaleImage contrast = new GrayScaleImage(w, h);
+
+        int max = 0;
+        int min = 255;
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                final int p = data.getPixel(i, j);
+
+                if (p > max) {
+                    max = p;
+                }
+
+                if (p < min) {
+                    min = p;
+                }
+            }
+        }
+
+        final float d = max - min;
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                final int p = data.getPixel(i, j);
+                final int c = Math.round(255*(p - min)/d);
+                contrast.setPixel(i, j, c);
+            }
+        }
+
+        return contrast;
+    }
+
     GrayScaleImage gradient(GrayScaleImage data) {
         final int w = data.getWidth();
         final int h = data.getHeight();
@@ -82,7 +115,7 @@ final class BarcodeFunctions {
     }
 
     /**
-     * <a href="https://nishatlea.medium.com/finding-out-the-values-of-a-gaussian-kernel-in-image-processing-9caaf213b4ab">Barcode Detection Reference Implementation</a>
+     * <a href="https://nishatlea.medium.com/finding-out-the-values-of-a-gaussian-kernel-in-image-processing-9caaf213b4ab">Gaussian Kernel Calculation Reference</a>
      */
     private GrayScaleImage gaussianFilter(GrayScaleImage data, int size) {
         final Kernel kernel = (new KernelGenerator()).gaussianKernel(size);

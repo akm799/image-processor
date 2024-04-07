@@ -10,7 +10,7 @@ import java.io.File;
 /**
  * Test implementation of a barcode scanning algorithm described in
  *
- * https://www.ijser.org/researchpaper/Robust-Algorithm-for-Developing-Barcode-Recognition-System-using-Web-cam.pdf
+ * <a href="https://www.ijser.org/researchpaper/Robust-Algorithm-for-Developing-Barcode-Recognition-System-using-Web-cam.pdf">Barcode Scanner Algorithm Reference.</a>
  *
  *
  */
