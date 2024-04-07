@@ -3,16 +3,17 @@ package com.test.image.model;
 public final class Kernel {
     public static final int MIN_SIZE = 3;
 
+    private final int n;
     private final int sum;
     private final int[][] k;
 
     public Kernel(int[][] k) {
         checkValues(k);
 
+        this.n = k.length;
         this.sum = sum(k);
-        final int n = k[0].length;
         this.k = new int[n][n];
-        System.arraycopy(k, 0, this.k, 0, n);
+        System.arraycopy(k, 0, this.k, 0, this.n);
     }
 
     private void checkValues(int[][] k) {
@@ -49,7 +50,6 @@ public final class Kernel {
 
     private int sum(int[][] k) {
         int sum = 0;
-        final int n = k[0].length;
         for (int j=0 ; j<n ; j++) {
             for (int i=0 ; i<n ; i++) {
                 sum += k[j][i];
@@ -74,7 +74,6 @@ public final class Kernel {
     private void toString(StringBuffer sb) {
         final String[][] s = toStrings(k);
 
-        final int n = k.length;
         for (int j=0 ; j<n ; j++) {
             for (int i=0 ; i<n ; i++) {
                 sb.append(s[j][i]);
@@ -85,7 +84,6 @@ public final class Kernel {
     }
 
     private String[][] toStrings(int[][] k) {
-        final int n = k.length;
         final int maxLen = maxLen(k);
         final String[][] result = new String[n][n];
         final StringBuffer sb = new StringBuffer(maxLen);
@@ -101,7 +99,6 @@ public final class Kernel {
 
     private int maxLen(int[][] k) {
         int m = -1;
-        final int n = k[0].length;
         for (int j=0 ; j<n ; j++) {
             for (int i=0 ; i<n ; i++) {
                 if (k[j][i] > m) {
