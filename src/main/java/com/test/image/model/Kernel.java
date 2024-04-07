@@ -4,13 +4,15 @@ public final class Kernel {
     public static final int MIN_SIZE = 3;
 
     private final int n;
-    private final int sum;
+    private final int n2;
+    private final float sum;
     private final int[][] k;
 
     public Kernel(int[][] k) {
         checkValues(k);
 
         this.n = k.length;
+        this.n2 = n/2;
         this.sum = sum(k);
         this.k = new int[n][n];
         System.arraycopy(k, 0, this.k, 0, this.n);
@@ -60,7 +62,17 @@ public final class Kernel {
     }
 
     public int apply(GrayScaleImage image, int x, int y) {
-        return 0; //TODO
+        final int minX = x - n2;
+        final int minY = y - n2;
+
+        int t = 0;
+        for (int j=0 ; j<n ; j++) {
+            for (int i=0 ; i<n ; i++) {
+                t += k[j][i] * image.getPixel(minX + i, minY + j);
+            }
+        }
+
+        return Math.round(t/sum);
     }
 
     @Override
