@@ -61,18 +61,35 @@ public final class Kernel {
         return sum;
     }
 
-    public int apply(GrayScaleImage image, int x, int y) {
+    public int apply(GrayScaleImage image, int w, int h, int x, int y) {
         final int minX = x - n2;
         final int minY = y - n2;
 
         int t = 0;
         for (int j=0 ; j<n ; j++) {
             for (int i=0 ; i<n ; i++) {
-                t += k[j][i] * image.getPixel(minX + i, minY + j);
+                t += k[j][i] * getSafePixel(image, w, h, minX + i, minY + j);
             }
         }
 
         return Math.round(t/sum);
+    }
+
+    private int getSafePixel(GrayScaleImage data, int w, int h, int x, int y) {
+        final int xSafe = getSafe(w, x);
+        final int ySafe = getSafe(h, y);
+
+        return data.getPixel(xSafe, ySafe);
+    }
+
+    private int getSafe(int maxExclusive, int i) {
+        if (i < 0) {
+            return -i;
+        } else if (i >= maxExclusive) {
+            return maxExclusive - i + maxExclusive - 2;
+        } else {
+            return i;
+        }
     }
 
     @Override
