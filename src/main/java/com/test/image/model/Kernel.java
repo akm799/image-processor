@@ -1,8 +1,6 @@
 package com.test.image.model;
 
 public final class Kernel {
-    public static final int MIN_SIZE = 3;
-
     private final int n;
     private final int n2;
     private final float sum;
@@ -24,17 +22,8 @@ public final class Kernel {
         }
 
         final int n = k.length;
-
         if (n == 0) {
             throw new IllegalArgumentException("Empty input array.");
-        }
-
-        if (n < MIN_SIZE) {
-            throw new IllegalArgumentException("The input array of size " + n + " is less than the minimum allowed size of " + MIN_SIZE + ".");
-        }
-
-        if (n%2 == 0) {
-            throw new IllegalArgumentException("The size " + n + " of the input array is not an odd number.");
         }
 
         for (int[] r : k) {
@@ -61,6 +50,10 @@ public final class Kernel {
         return sum;
     }
 
+    /**
+     * Applies this kernel to the input image for the input pixel and mirrors
+     * any pixels that fall outside the input image.
+     */
     public int apply(GrayScaleImage image, int w, int h, int x, int y) {
         final int minX = x - n2;
         final int minY = y - n2;
@@ -70,6 +63,30 @@ public final class Kernel {
             final int yp = minY + j;
             for (int i=0 ; i<n ; i++) {
                 t += k[j][i] * getSafePixel(image, w, h, minX + i, yp);
+            }
+        }
+
+        return Math.round(t/sum);
+    }
+
+    /**
+     * Applies this kernel to the input image for the input pixel but ignores
+     * any pixels that fall outside the input image.
+     */
+    public int applyStrict(GrayScaleImage image, int w, int h, int x, int y) {
+        final int minX = x - n2;
+        final int minY = y - n2;
+
+        int t = 0;
+        for (int j=0 ; j<n ; j++) {
+            final int yp = minY + j;
+            if (0 <= yp && yp < h) {
+                for (int i=0 ; i<n ; i++) {
+                    final int xp = minX + i;
+                    if (0 <= xp && xp < w) {
+                        t += k[j][i] * getSafePixel(image, w, h, xp, yp);
+                    }
+                }
             }
         }
 
