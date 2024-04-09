@@ -1,9 +1,11 @@
 package com.test.image.processors.barcode;
 
 import com.test.image.model.GrayScaleImage;
+import com.test.image.model.Location;
 import com.test.image.util.GrayScaleImageHelper;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 
@@ -31,8 +33,10 @@ public final class BarcodeFinder {
         final GrayScaleImage data = new GrayScaleImage(photo);
         final GrayScaleImage smaller = functions.scaleDown(data);
         final GrayScaleImage gradient = functions.gradient(smaller);
+        final Location max = functions.max(gradient);
         final GrayScaleImage smooth = functions.smooth(gradient);
         final GrayScaleImage binary = functions.binary(smooth);
+        final Rectangle blobBox = functions.findBlobBox(binary, max.x(), max.y(), 10);
         debug(binary);
     }
 

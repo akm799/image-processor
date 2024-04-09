@@ -5,6 +5,8 @@ import com.test.image.model.Kernel;
 import com.test.image.model.Location;
 import com.test.image.processors.blur.KernelGenerator;
 
+import java.awt.*;
+
 final class BarcodeFunctions {
 
     BarcodeFunctions() {}
@@ -172,7 +174,61 @@ final class BarcodeFunctions {
         return binary;
     }
 
-    GrayScaleImage findBlob(GrayScaleImage data, int x0, int y0, int foregroundThreshold) {
+    Rectangle findBlobBox(GrayScaleImage data, int x0, int y0, int foregroundThreshold) {
+        final int w = data.getWidth();
+        final int h = data.getHeight();
+        final Labels labels = findBlob(data, x0, y0, foregroundThreshold);
+
+        int xMin = w + 1;
+        int xMax = -1;
+        int yMin = h + 1;
+        int yMax = -1;
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                if (labels.isLabelled(i, j)) {
+                    if (i < xMin) {
+                        xMin = i;
+                    }
+
+                    if (i > xMax) {
+                        xMax = i;
+                    }
+
+                    if (j < yMin) {
+                        yMin = j;
+                    }
+
+                    if (j > yMax) {
+                        yMax = j;
+                    }
+                }
+            }
+        }
+
+        return new Rectangle(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
+    }
+
+    // This method exists for unit test purposes only.
+    GrayScaleImage markBlob(GrayScaleImage data, int x0, int y0, int foregroundThreshold, int markerValue) {
+        final int w = data.getWidth();
+        final int h = data.getHeight();
+        final Labels labels = findBlob(data, x0, y0, foregroundThreshold);
+
+        final GrayScaleImage blob = new GrayScaleImage(w, h);
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                if (labels.isLabelled(i, j)) {
+                    blob.setPixel(i, j, markerValue);
+                } else {
+                    blob.setPixel(i, j, data.getPixel(i, j));
+                }
+            }
+        }
+
+        return blob;
+    }
+
+    private Labels findBlob(GrayScaleImage data, int x0, int y0, int foregroundThreshold) {
         final int w = data.getWidth();
         final int h = data.getHeight();
         final Location pixel = new Location();
@@ -189,18 +245,7 @@ final class BarcodeFunctions {
             }
         }
 
-        final GrayScaleImage blob = new GrayScaleImage(w, h);
-        for (int j=0 ; j<h ; j++) {
-            for (int i=0 ; i<w ; i++) {
-                if (labels.isLabelled(i, j)) {
-                    blob.setPixel(i, j, 127);
-                } else {
-                    blob.setPixel(i, j, data.getPixel(i, j));
-                }
-            }
-        }
-
-        return blob;
+        return labels;
     }
 
     private void processAllNeighbourPixels(GrayScaleImage data, int w, int h, int x, int y, int foregroundThreshold, Location pixel, Labels labels) {
