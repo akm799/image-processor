@@ -24,11 +24,17 @@ final class Labels {
     }
 
     void add(int x, int y) {
-        queue.add(x + y*w);
+        final int i = x + y*w;
+        if (!queue.contains(i)) {
+            queue.add(i);
+        }
     }
 
     void add(Location pixel) {
-        queue.add(pixel.x() + pixel.y()*w);
+        final int i = pixel.x() + pixel.y()*w;
+        if (!queue.contains(i)) {
+            queue.add(i);
+        }
     }
 
     boolean removeAndLabel(Location pixel) {
