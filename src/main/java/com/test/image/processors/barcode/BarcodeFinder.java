@@ -32,13 +32,14 @@ public final class BarcodeFinder {
         final GrayScaleImage gradient = functions.gradient(smaller);
         final Location max = functions.max(gradient);
         final GrayScaleImage smooth = functions.smooth(gradient);
-        final GrayScaleImage binary = functions.binary(smooth);
+        final GrayScaleImage binary = functions.binary(smooth, 10);
         final Rectangle blobBox = functions.findBlobBox(binary, max.x(), max.y(), 10);
         final GrayScaleImage cut = smaller.cut(blobBox);
 
         if (cut != null) {
             final GrayScaleImage contrast = functions.contrast(cut);
-            debug(contrast);
+            final GrayScaleImage barcodeBinary = functions.binary(contrast, 127);
+            debug(barcodeBinary);
         } else {
             debug(data);
         }

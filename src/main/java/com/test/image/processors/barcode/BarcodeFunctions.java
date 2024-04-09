@@ -158,8 +158,7 @@ final class BarcodeFunctions {
         }
     }
 
-    GrayScaleImage binary(GrayScaleImage image) {
-        final int threshold = 10;
+    GrayScaleImage binary(GrayScaleImage image, int threshold) {
         final int w = image.getWidth();
         final int h = image.getHeight();
         final GrayScaleImage binary = new GrayScaleImage(w, h);
