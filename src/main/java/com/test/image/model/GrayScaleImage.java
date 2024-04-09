@@ -86,10 +86,6 @@ public final class GrayScaleImage extends ImageDimensions {
             return false;
         }
 
-        if (segment.x + segment.width > data.width || segment.y + segment.height > data.height) {
-            return false;
-        }
-
-        return true;
+        return segment.x + segment.width <= data.width && segment.y + segment.height <= data.height;
     }
 }
