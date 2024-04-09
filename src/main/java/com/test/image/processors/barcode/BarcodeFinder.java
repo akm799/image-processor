@@ -11,10 +11,7 @@ import java.io.File;
 
 /**
  * Test implementation of a barcode scanning algorithm described in
- *
  * <a href="https://www.ijser.org/researchpaper/Robust-Algorithm-for-Developing-Barcode-Recognition-System-using-Web-cam.pdf">Barcode Scanner Algorithm Reference.</a>
- *
- *
  */
 public final class BarcodeFinder {
     private static final File OUTPUT_FILE = new File("/Users/thanos/Documents/Photos/Images/processed/barcode-area.png");
@@ -40,7 +37,8 @@ public final class BarcodeFinder {
         final GrayScaleImage cut = smaller.cut(blobBox);
 
         if (cut != null) {
-            debug(cut);
+            final GrayScaleImage contrast = functions.contrast(cut);
+            debug(contrast);
         } else {
             debug(data);
         }
