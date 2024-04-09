@@ -294,6 +294,40 @@ final class BarcodeFunctions {
         }
     }
 
+    GrayScaleImage ideal(GrayScaleImage data) {
+        final int w = data.getWidth();
+        final int h = data.getHeight();
+        final int[] columns = new int[w];
+
+        for (int i=0 ; i<w ; i++) {
+            int nZeros = 0;
+            int nMaxes = 0;
+            for (int j=0 ; j<h ; j++) {
+                final int v = data.getPixel(i, j);
+                if (v == 0) {
+                    nZeros++;
+                } else if (v == 255) {
+                    nMaxes++;
+                }
+            }
+
+            if (nZeros >= nMaxes) {
+                columns[i] = 0;
+            } else {
+                columns[i] = 255;
+            }
+        }
+
+        final GrayScaleImage ideal = new GrayScaleImage(w, h);
+        for (int i=0 ; i<w ; i++) {
+            for (int j=0 ; j<h ; j++) {
+                ideal.setPixel(i, j, columns[i]);
+            }
+        }
+
+        return ideal;
+    }
+
     private int getSafePixel(GrayScaleImage data, int w, int h, int x, int y) {
         final int xSafe = getSafe(w, x);
         final int ySafe = getSafe(h, y);
