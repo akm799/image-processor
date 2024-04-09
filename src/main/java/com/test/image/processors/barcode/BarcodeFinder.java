@@ -37,7 +37,13 @@ public final class BarcodeFinder {
         final GrayScaleImage smooth = functions.smooth(gradient);
         final GrayScaleImage binary = functions.binary(smooth);
         final Rectangle blobBox = functions.findBlobBox(binary, max.x(), max.y(), 10);
-        debug(binary);
+        final GrayScaleImage cut = smaller.cut(blobBox);
+
+        if (cut != null) {
+            debug(cut);
+        } else {
+            debug(data);
+        }
     }
 
     private void debug(GrayScaleImage data) {

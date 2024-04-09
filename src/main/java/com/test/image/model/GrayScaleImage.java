@@ -2,6 +2,7 @@ package com.test.image.model;
 
 import com.test.image.util.ColourHelper;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public final class GrayScaleImage extends ImageDimensions {
@@ -15,6 +16,11 @@ public final class GrayScaleImage extends ImageDimensions {
     public GrayScaleImage(ImageMetaData metaData) {
         this(metaData.getWidth(), metaData.getHeight());
         setPixels(metaData);
+    }
+
+    private GrayScaleImage(int[] pixels, int width) {
+        super(width, pixels.length/width);
+        this.pixels = pixels;
     }
 
     private void setPixels(ImageMetaData metaData) {
@@ -57,5 +63,33 @@ public final class GrayScaleImage extends ImageDimensions {
 
     public void setPixel(int index, int value) {
         pixels[index] = value;
+    }
+
+    public GrayScaleImage cut(Rectangle segment) {
+        if (isInside(segment, this)) {
+            final int maxY = segment.y + segment.height;
+            final int[] pixels = new int[segment.width * segment.height];
+            for (int j=segment.y ; j<maxY ; j++) {
+                final int srcPos = segment.x + j*this.width;
+                final int destPos = (j - segment.y) * segment.width;
+                System.arraycopy(this.pixels, srcPos, pixels, destPos, segment.width);
+            }
+
+            return new GrayScaleImage(pixels, segment.width);
+        } else {
+            return null;
+        }
+    }
+
+    private boolean isInside(Rectangle segment, GrayScaleImage data) {
+        if (segment.x < 0 || segment.x >= data.width || segment.y < 0 || segment.y >= data.height) {
+            return false;
+        }
+
+        if (segment.x + segment.width > data.width || segment.y + segment.height > data.height) {
+            return false;
+        }
+
+        return true;
     }
 }
