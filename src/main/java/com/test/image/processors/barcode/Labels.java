@@ -19,8 +19,8 @@ final class Labels {
         return labels[x + y*w];
     }
 
-    boolean isNotLabelled(Location pixel) {
-        return !labels[pixel.x() + pixel.y()*w];
+    boolean isNotLabelled(int x, int y) {
+        return !labels[x + y*w];
     }
 
     void add(int x, int y) {

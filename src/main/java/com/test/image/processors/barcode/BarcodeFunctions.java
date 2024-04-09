@@ -229,9 +229,11 @@ final class BarcodeFunctions {
         processNeighbourPixel(data, w, h, x, y, 1, 1, foregroundThreshold, pixel, labels);
     }
 
-    private void processNeighbourPixel(GrayScaleImage data, int w, int h, int x, int y, int dx, int dy, int foregroundThreshold, Location pixel, Labels labels) {
-        if (labels.isNotLabelled(pixel)) {
-            getForegroundPixel(data, w, h, x+dx, y+dy, foregroundThreshold, pixel);
+    private void processNeighbourPixel(GrayScaleImage data, int w, int h, int xc, int yc, int dx, int dy, int foregroundThreshold, Location pixel, Labels labels) {
+        final int x = xc + dx;
+        final int y = yc + dy;
+        if (labels.isNotLabelled(x, y)) {
+            getForegroundPixel(data, w, h, x, y, foregroundThreshold, pixel);
             if (pixel.isNotEmpty()) {
                 labels.add(pixel);
             }
