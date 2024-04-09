@@ -24,4 +24,13 @@ public final class Location {
     public void clear() {
         set(-1, -1);
     }
+
+    @Override
+    public String toString() {
+        if (isNotEmpty()) {
+            return "(" + x + ", " + y + ")";
+        } else {
+            return "empty";
+        }
+    }
 }
