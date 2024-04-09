@@ -2,6 +2,7 @@ package com.test.image.processors.barcode;
 
 import com.test.image.model.GrayScaleImage;
 import com.test.image.model.Kernel;
+import com.test.image.model.Location;
 import com.test.image.processors.blur.KernelGenerator;
 
 final class BarcodeFunctions {
@@ -108,6 +109,25 @@ final class BarcodeFunctions {
         return gradient;
     }
 
+    Location max(GrayScaleImage data) {
+        final int w = data.getWidth();
+        final int h = data.getHeight();
+        final Location maxPixel = new Location();
+
+        int max = -1;
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                final int v = data.getPixel(i, j);
+                if (v > max) {
+                    max = v;
+                    maxPixel.set(i, j);
+                }
+            }
+        }
+
+        return maxPixel;
+    }
+
     GrayScaleImage smooth(GrayScaleImage data) {
         final int kernelSize = 43;
 
@@ -150,6 +170,82 @@ final class BarcodeFunctions {
         }
 
         return binary;
+    }
+
+    GrayScaleImage findBlob(GrayScaleImage data, int x0, int y0, int foregroundThreshold) {
+        final int w = data.getWidth();
+        final int h = data.getHeight();
+        final Location pixel = new Location();
+        final Labels labels = new Labels(w, h);
+
+        labels.add(x0, y0);
+        while (labels.hasPixels()) {
+            if (labels.removeAndLabel(pixel)) {
+                final int x = pixel.x();
+                final int y = pixel.y();
+                if (data.getPixel(x, y) >= foregroundThreshold) {
+                    processAllNeighbourPixels(data, w, h, x, y, foregroundThreshold, pixel, labels);
+                }
+            }
+        }
+
+        final GrayScaleImage blob = new GrayScaleImage(w, h);
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                if (labels.isLabelled(i, j)) {
+                    blob.setPixel(i, j, 127);
+                } else {
+                    blob.setPixel(i, j, data.getPixel(i, j));
+                }
+            }
+        }
+
+        return blob;
+    }
+
+    private void processAllNeighbourPixels(GrayScaleImage data, int w, int h, int x, int y, int foregroundThreshold, Location pixel, Labels labels) {
+        // East
+        processNeighbourPixel(data, w, h, x, y, 1, 0, foregroundThreshold, pixel, labels);
+
+        // North East
+        processNeighbourPixel(data, w, h, x, y, 1, -1, foregroundThreshold, pixel, labels);
+
+        // North
+        processNeighbourPixel(data, w, h, x, y, 0, -1, foregroundThreshold, pixel, labels);
+
+        // North West
+        processNeighbourPixel(data, w, h, x, y, -1, -1, foregroundThreshold, pixel, labels);
+
+        // West
+        processNeighbourPixel(data, w, h, x, y, -1, 0, foregroundThreshold, pixel, labels);
+
+        // South West
+        processNeighbourPixel(data, w, h, x, y, -1, 1, foregroundThreshold, pixel, labels);
+
+        // South
+        processNeighbourPixel(data, w, h, x, y, 0, 1, foregroundThreshold, pixel, labels);
+
+        // South East
+        processNeighbourPixel(data, w, h, x, y, 1, 1, foregroundThreshold, pixel, labels);
+    }
+
+    private void processNeighbourPixel(GrayScaleImage data, int w, int h, int x, int y, int dx, int dy, int foregroundThreshold, Location pixel, Labels labels) {
+        if (labels.isNotLabelled(pixel)) {
+            getForegroundPixel(data, w, h, x+dx, y+dy, foregroundThreshold, pixel);
+            if (pixel.isNotEmpty()) {
+                labels.add(pixel);
+            }
+        }
+    }
+
+    private void getForegroundPixel(GrayScaleImage data, int w, int h, int x, int y, int foregroundThreshold, Location pixel) {
+        if (x < 0 || x >= w || y < 0 || y >= h) {
+            pixel.clear();
+        } else if (data.getPixel(x, y) >= foregroundThreshold) {
+            pixel.set(x, y);
+        } else {
+            pixel.clear();
+        }
     }
 
     private int getSafePixel(GrayScaleImage data, int w, int h, int x, int y) {
