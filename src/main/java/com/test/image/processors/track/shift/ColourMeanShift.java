@@ -13,6 +13,8 @@ public class ColourMeanShift {
     private static final float INFINITY_WEIGHT = 3f;
 
     /**
+     * Intersting article on mean-shift tracking: <a href="https://www.cse.psu.edu/~rtc12/CSE598C/meanshiftIntro.pdf">Introduction to Mean-Shift Tracking.</a>
+     *
      * Returns a point that represents a shift from the input window back towards some initial window. To evaluate this
      * shift a comparison, made between our input window and the initial window, is used.
      * @param window a window representing a shift from some initial window (the shift we want is the reverse shift that

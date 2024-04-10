@@ -173,6 +173,12 @@ final class BarcodeFunctions {
         return binary;
     }
 
+    /**
+     * Based on the "One component at the time" section in <a href="https://en.wikipedia.org/wiki/Connected-component_labeling">Connected-component labelling</a>
+     * but done only for a single component/blob (not all components/blobs in the image).
+     * It returns a rectangle which encloses the single component/blob that we found inside
+     * the input image.
+     */
     Rectangle findBlobBox(GrayScaleImage data, int x0, int y0, int foregroundThreshold) {
         final int w = data.getWidth();
         final int h = data.getHeight();
@@ -207,7 +213,15 @@ final class BarcodeFunctions {
         return new Rectangle(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
     }
 
-    // This method exists for unit test purposes only.
+    /**
+     * Based on the "One component at the time" section in <a href="https://en.wikipedia.org/wiki/Connected-component_labeling">Connected-component labelling</a>
+     * but done only for a single component/blob (not all components/blobs in the image).
+     * This method exists for testing purposes only. Normally, we only need to return a rectangle,
+     * inside which, the single component/blob we found is enclosed. However, here we return the
+     * original image, with the pixels of the single component/blob we found set to the input
+     * value "markerValue". This way we can visually see the single component/blob we found for
+     * testing purposes.
+     */
     GrayScaleImage markBlob(GrayScaleImage data, int x0, int y0, int foregroundThreshold, int markerValue) {
         final int w = data.getWidth();
         final int h = data.getHeight();
