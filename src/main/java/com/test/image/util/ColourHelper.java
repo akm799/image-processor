@@ -5,6 +5,10 @@ public class ColourHelper {
     private static final int MAX_ALPHA = 255;
     private static final byte MAX_ALPHA_BYTE = (byte)MAX_ALPHA;
 
+    private static final int RED_INDEX = 0;
+    private static final int GREEN_INDEX = 1;
+    private static final int BLUE_INDEX = 2;
+
     public static boolean isValidRgbColour(int rgb) {
         final int red = getRed(rgb);
         final int green = getGreen(rgb);
@@ -30,7 +34,13 @@ public class ColourHelper {
     }
 
     public static int getBlue(int rgb) {
-        return (rgb >> 0) & 0xFF;
+        return rgb & 0xFF;
+    }
+
+    public static void getRgbValues(int rgb, int[] rgbValues) {
+        rgbValues[RED_INDEX]   = (rgb >> 16) & 0xFF;
+        rgbValues[GREEN_INDEX] = (rgb >>  8) & 0xFF;
+        rgbValues[BLUE_INDEX]  =  rgb        & 0xFF;
     }
 
     public static int getRgb(int red, int green, int blue) {
@@ -41,7 +51,7 @@ public class ColourHelper {
         return  ((alpha   & 0xFF) << 24) |
                 ((red     & 0xFF) << 16) |
                 ((green   & 0xFF) <<  8) |
-                ((blue    & 0xFF) <<  0);
+                ((blue    & 0xFF)      );
     }
 
     public static int toGrayScale(int rgb) {
