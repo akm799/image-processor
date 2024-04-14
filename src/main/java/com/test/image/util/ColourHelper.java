@@ -43,15 +43,15 @@ public class ColourHelper {
         rgbValues[BLUE_INDEX]  =  rgb        & 0xFF;
     }
 
-    public static void getNormalizedRgbValues(int rgb, int scalingFactor, int[] rgbValues) {
+    public static void getNormalizedRgbValues(int rgb, int[] rgbValues) {
         final int ri = (rgb >> 16) & 0xFF;
         final int gi = (rgb >>  8) & 0xFF;
         final int bi =  rgb        & 0xFF;
         final float sum = ri + gi + bi;
 
-        rgbValues[RED_INDEX]   = scalingFactor * Math.round(ri/sum);
-        rgbValues[GREEN_INDEX] = scalingFactor * Math.round(gi/sum);
-        rgbValues[BLUE_INDEX]  = scalingFactor * Math.round(bi/sum);
+        rgbValues[RED_INDEX]   = MAX_RGB_COMPONENT * Math.round(ri/sum);
+        rgbValues[GREEN_INDEX] = MAX_RGB_COMPONENT * Math.round(gi/sum);
+        rgbValues[BLUE_INDEX]  = MAX_RGB_COMPONENT * Math.round(bi/sum);
     }
 
     public static int getRgb(int red, int green, int blue) {

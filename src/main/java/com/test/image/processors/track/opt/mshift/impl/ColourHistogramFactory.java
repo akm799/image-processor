@@ -8,8 +8,8 @@ public final class ColourHistogramFactory {
         return new BasicColourHistogram(binWidth);
     }
 
-    public static ColourHistogram normalizedInstance(int nBins, int binWidth) {
-        return new NormalizedColourHistogram(nBins, binWidth);
+    public static ColourHistogram normalizedInstance(int binWidth) {
+        return new NormalizedColourHistogram(binWidth);
     }
 
     private ColourHistogramFactory() {}

@@ -10,7 +10,6 @@ public final class NormalizedColourHistogram implements ColourHistogram {
     private static final int X_INDEX = 0;
     private static final int Y_INDEX = 1;
 
-    private final int nBins;
     private final int binWidth;
 
     private int total = 0;
@@ -18,10 +17,11 @@ public final class NormalizedColourHistogram implements ColourHistogram {
 
     private final int[] rgbValues = new int[3];
 
-    NormalizedColourHistogram(int nBins, int binWidth) {
-        this.nBins = nBins;
+    NormalizedColourHistogram(int binWidth) {
+        final int maxNo = 256;
+        final int n = maxNo/binWidth + maxNo%binWidth;
         this.binWidth = binWidth;
-        this.data = new int[nBins][nBins][nBins];
+        this.data = new int[n][n][n];
     }
 
     @Override
@@ -29,7 +29,7 @@ public final class NormalizedColourHistogram implements ColourHistogram {
         final int w = imagePixels[0].length;
         for (int[] row : imagePixels) {
             for (int i=0; i<w; i++) {
-                ColourHelper.getNormalizedRgbValues(row[i], nBins, rgbValues);
+                ColourHelper.getNormalizedRgbValues(row[i], rgbValues);
                 final int ri = rgbValues[RED_INDEX]   / binWidth;
                 final int gi = rgbValues[GREEN_INDEX] / binWidth;
                 final int bi = rgbValues[BLUE_INDEX]  / binWidth;
@@ -48,7 +48,7 @@ public final class NormalizedColourHistogram implements ColourHistogram {
         int yc = 0;
         for (int j=0 ; j<h ; j++) {
             for (int i=0 ; i<w ; i++) {
-                ColourHelper.getNormalizedRgbValues(segmentPixels[j][i], nBins, rgbValues);
+                ColourHelper.getNormalizedRgbValues(segmentPixels[j][i], rgbValues);
                 final int ri = rgbValues[RED_INDEX]/binWidth;
                 final int gi = rgbValues[GREEN_INDEX]/binWidth;
                 final int bi = rgbValues[BLUE_INDEX]/binWidth;
