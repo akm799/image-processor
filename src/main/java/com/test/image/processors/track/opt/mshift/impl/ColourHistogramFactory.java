@@ -4,11 +4,11 @@ import com.test.image.processors.track.opt.mshift.ColourHistogram;
 
 public final class ColourHistogramFactory {
 
-    public ColourHistogram basicInstance(int binWidth) {
+    public static ColourHistogram basicInstance(int binWidth) {
         return new BasicColourHistogram(binWidth);
     }
 
-    public ColourHistogram normalizedInstance(int nBins, int binWidth) {
+    public static ColourHistogram normalizedInstance(int nBins, int binWidth) {
         return new NormalizedColourHistogram(nBins, binWidth);
     }
 
