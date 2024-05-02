@@ -1,6 +1,7 @@
 package com.test.image.processors.track.opt.mshift.impl;
 
 import com.test.image.processors.track.opt.mshift.ColourHistogram;
+import com.test.image.test.ColourHistogramDataAssertion;
 
 abstract class AbstractColourHistogram implements ColourHistogram {
     private static final int RED_INDEX = 0;
@@ -63,4 +64,9 @@ abstract class AbstractColourHistogram implements ColourHistogram {
     }
 
     abstract void getRgbValues(int rgb, int[] rgbValues);
+
+    @Override
+    public void assertData(ColourHistogramDataAssertion assertion) {
+        assertion.assertData(data);
+    }
 }
