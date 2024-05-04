@@ -49,9 +49,9 @@ public class ColourHelper {
         final int bi =  rgb        & 0xFF;
         final float sum = ri + gi + bi;
 
-        rgbValues[RED_INDEX]   = MAX_RGB_COMPONENT * Math.round(ri/sum);
-        rgbValues[GREEN_INDEX] = MAX_RGB_COMPONENT * Math.round(gi/sum);
-        rgbValues[BLUE_INDEX]  = MAX_RGB_COMPONENT * Math.round(bi/sum);
+        rgbValues[RED_INDEX]   = Math.round(MAX_RGB_COMPONENT * ri/sum);
+        rgbValues[GREEN_INDEX] = Math.round(MAX_RGB_COMPONENT * gi/sum);
+        rgbValues[BLUE_INDEX]  = Math.round(MAX_RGB_COMPONENT * bi/sum);
     }
 
     public static int getRgb(int red, int green, int blue) {
