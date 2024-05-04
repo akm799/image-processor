@@ -56,7 +56,7 @@ abstract class AbstractColourHistogramShiftTest {
     }
 
     @Test
-    public void shouldShiftHorizontallyToSingleColourGroup() {
+    public void shouldShiftHorizontallyToSingleColourColumn() {
         final int x = random.nextInt(w);
         final int[][] segmentPixels = new int[h][w];
         for (int j=0 ; j<h ; j++) {
@@ -70,7 +70,7 @@ abstract class AbstractColourHistogramShiftTest {
     }
 
     @Test
-    public void shouldShiftVerticallyToSingleColourGroup() {
+    public void shouldShiftVerticallyToSingleColourRow() {
         final int y = random.nextInt(h);
         final int[][] segmentPixels = new int[h][w];
         Arrays.fill(segmentPixels[y], singleColour);
