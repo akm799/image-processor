@@ -12,7 +12,6 @@ abstract class AbstractColourHistogram implements ColourHistogram {
 
     private final int binWidth;
 
-    private int total = 0;
     private final int[][][] data;
 
     private final int[] rgbValues = new int[3];
@@ -34,7 +33,6 @@ abstract class AbstractColourHistogram implements ColourHistogram {
                 final int gi = rgbValues[GREEN_INDEX] / binWidth;
                 final int bi = rgbValues[BLUE_INDEX]  / binWidth;
                 data[ri][gi][bi]++;
-                total++;
             }
         }
     }
@@ -46,6 +44,7 @@ abstract class AbstractColourHistogram implements ColourHistogram {
 
         int xc = 0;
         int yc = 0;
+        int sumOfWeights = 0;
         for (int j=0 ; j<h ; j++) {
             for (int i=0 ; i<w ; i++) {
                 getRgbValues(segmentPixels[j][i], rgbValues);
@@ -55,12 +54,13 @@ abstract class AbstractColourHistogram implements ColourHistogram {
                 final int weight = data[ri][gi][bi];
                 xc += weight*i;
                 yc += weight*j;
+                sumOfWeights += weight;
             }
         }
 
-        final float sumOfWeights = total;
-        centre[X_INDEX] = Math.round(xc/sumOfWeights);
-        centre[Y_INDEX] = Math.round(yc/sumOfWeights);
+        final float sum = sumOfWeights;
+        centre[X_INDEX] = Math.round(xc/sum);
+        centre[Y_INDEX] = Math.round(yc/sum);
     }
 
     abstract void getRgbValues(int rgb, int[] rgbValues);
