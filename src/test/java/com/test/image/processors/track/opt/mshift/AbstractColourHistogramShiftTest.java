@@ -26,21 +26,10 @@ abstract class AbstractColourHistogramShiftTest {
 
         w = 3 + random.nextInt(2);
         h = 3 + random.nextInt(2);
-
-        final int[][] targetPixels = singleColourTargetPixels(w, h, singleColour);
-        underTest.fill(targetPixels);
+        ColourHistogramTestHelper.fillColourHistogramWithSingleColour(underTest, w, h, singleColour);
     }
 
     abstract ColourHistogram instance(int binWidth);
-
-    private int[][] singleColourTargetPixels(int w, int h, int singleColour) {
-        final int[][] targetPixels = new int[h][w];
-        for (int[] row : targetPixels) {
-            Arrays.fill(row, singleColour);
-        }
-
-        return targetPixels;
-    }
 
     @Test
     public void shouldShiftToSingleColourSinglePixel() {

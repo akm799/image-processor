@@ -38,6 +38,25 @@ abstract class AbstractColourHistogram implements ColourHistogram {
     }
 
     @Override
+    public final int findSimilarityScore(int[][] segmentPixels) {
+        final int h = segmentPixels.length;
+        final int w = segmentPixels[0].length;
+
+        int sumOfWeights = 0;
+        for (int j=0 ; j<h ; j++) {
+            for (int i=0 ; i<w ; i++) {
+                getRgbValues(segmentPixels[j][i], rgbValues);
+                final int ri = rgbValues[RED_INDEX]/binWidth;
+                final int gi = rgbValues[GREEN_INDEX]/binWidth;
+                final int bi = rgbValues[BLUE_INDEX]/binWidth;
+                sumOfWeights += data[ri][gi][bi];
+            }
+        }
+
+        return sumOfWeights;
+    }
+
+    @Override
     public final void findSimilarityCentre(int[][] segmentPixels, int[] centre) {
         final int h = segmentPixels.length;
         final int w = segmentPixels[0].length;
