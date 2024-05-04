@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-abstract class AbstractColourHistogramTest {
+abstract class AbstractColourHistogramFillTest {
     final int redIndex = 0;
     final int greenIndex = 1;
     final int blueIndex = 2;

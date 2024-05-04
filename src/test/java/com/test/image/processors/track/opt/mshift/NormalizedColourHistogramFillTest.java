@@ -3,7 +3,7 @@ package com.test.image.processors.track.opt.mshift;
 import com.test.image.processors.track.opt.mshift.impl.ColourHistogramFactory;
 import com.test.image.util.ColourHelper;
 
-public class NormalizedColourHistogramTest extends AbstractColourHistogramTest {
+public class NormalizedColourHistogramFillTest extends AbstractColourHistogramFillTest {
 
     @Override
     ColourHistogram instance(int binWidth) {
