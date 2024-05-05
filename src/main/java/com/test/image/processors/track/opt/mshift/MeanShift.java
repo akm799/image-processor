@@ -6,25 +6,25 @@ final class MeanShift {
     private static final int X_INDEX = 0;
     private static final int Y_INDEX = 1;
 
-    private final ColourHistogram similarity;
     private final int[] centre = new int[2];
 
-    MeanShift(ColourHistogram similarity) {
-        this.similarity = similarity;
+    private final int deltaMin;
+    private final int maxTries;
+
+    MeanShift(int deltaMin, int maxTries) {
+        this.deltaMin = deltaMin;
+        this.maxTries = maxTries;
     }
 
-    Rectangle shift(int[][] imagePixels, Rectangle start) {
+    Rectangle shift(ColourHistogram similarity, int[][] imagePixels, Rectangle start) {
         final Rectangle segment = new Rectangle(start);
         centre[X_INDEX] = segment.x + segment.width/2;
         centre[Y_INDEX] = segment.y + segment.height/2;
 
-        final int deltaMin = 5; // TODO Determine optimum size.
-        final int maxTries = 100;
-
         int nTries = 0;
         boolean keepShifting = true;
         while (keepShifting) {
-            final int delta = shiftSegment(imagePixels, segment);
+            final int delta = shiftSegment(similarity, imagePixels, segment);
             nTries++;
 
             keepShifting = (delta > deltaMin && nTries < maxTries);
@@ -33,7 +33,7 @@ final class MeanShift {
         return new Rectangle(segment);
     }
 
-    private int shiftSegment(int[][] imagePixels, Rectangle segment) {
+    private int shiftSegment(ColourHistogram similarity, int[][] imagePixels, Rectangle segment) {
         final int xCentrePrevious = centre[X_INDEX];
         final int yCentrePrevious = centre[Y_INDEX];
         similarity.findSimilarityCentre(imagePixels, segment, centre);
