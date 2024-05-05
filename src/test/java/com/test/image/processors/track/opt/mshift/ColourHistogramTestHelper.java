@@ -1,21 +1,25 @@
 package com.test.image.processors.track.opt.mshift;
 
-import java.util.Arrays;
+import java.awt.*;
 
 class ColourHistogramTestHelper {
 
-    static void fillColourHistogramWithSingleColour(ColourHistogram underTest, int w, int h, int singleColour) {
-        final int[][] targetPixels = singleColourTargetPixels(w, h, singleColour);
-        underTest.fill(targetPixels);
+    static void fillColourHistogramWithSingleColour(ColourHistogram underTest, int w, int h, int singleColour, Rectangle targetRegion) {
+        final int[][] imagePixels = imagePixels(w, h, singleColour, targetRegion);
+        underTest.fill(imagePixels, targetRegion);
     }
 
-    private static int[][] singleColourTargetPixels(int w, int h, int singleColour) {
-        final int[][] targetPixels = new int[h][w];
-        for (int[] row : targetPixels) {
-            Arrays.fill(row, singleColour);
+    private static int[][] imagePixels(int w, int h, int singleColour, Rectangle targetRegion) {
+        final int[][] imagePixels = new int[h][w];
+        final int xMax = targetRegion.x + targetRegion.width;
+        final int yMax = targetRegion.y + targetRegion.height;
+        for (int j=targetRegion.y ; j<yMax ; j++) {
+            for (int i= targetRegion.x ; i<xMax ; i++) {
+                imagePixels[j][i] = singleColour;
+            }
         }
 
-        return targetPixels;
+        return imagePixels;
     }
 
     private ColourHistogramTestHelper() {}

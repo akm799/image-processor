@@ -5,14 +5,19 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
+
 abstract class AbstractColourHistogramFillTest {
+
+    private final int binWidth = 5;
+    private ColourHistogram underTest;
+
     final int redIndex = 0;
     final int greenIndex = 1;
     final int blueIndex = 2;
     private final int countIndex = 3;
-
-    private final int binWidth = 5;
-    private ColourHistogram underTest;
+    private final int xIndex = 0;
+    private final int yIndex = 1;
 
     abstract ColourHistogram instance(int binWidth);
 
@@ -54,21 +59,35 @@ abstract class AbstractColourHistogramFillTest {
         getExampleRgbBin(bin);
 
         final int[][] imagePixels = new int[10][10];
-        final int nPixels = imagePixels.length*imagePixels[0].length;
+        final Rectangle targetRegion = new Rectangle(4, 4, 5, 5);
+        final int nTargetRegionPixels = targetRegion.width * targetRegion.height;
+        checkPixelCoordinatesInTargetRegion(pixelCoordinates, targetRegion);
+
         for (int[] coordinates : pixelCoordinates) {
-            imagePixels[coordinates[0]][coordinates[1]] = rgb;
+            imagePixels[coordinates[xIndex]][coordinates[yIndex]] = rgb;
         }
-        underTest.fill(imagePixels);
+        underTest.fill(imagePixels, targetRegion);
 
         final int n = 52;
         final int[] singleBin = new int[]{bin[redIndex], bin[greenIndex], bin[blueIndex], pixelCoordinates.length};
-        final int[] backgroundPixelBins = new int[]{0, 0, 0, nPixels-pixelCoordinates.length};
+        final int[] backgroundPixelBins = new int[]{0, 0, 0, nTargetRegionPixels-pixelCoordinates.length};
         final int[][] values = new int[][]{singleBin, backgroundPixelBins};
         final ColourHistogramDataAssertion singleBinAssertion = data -> {
             assertDataSize(data, n);
             assertValues(data, values);
         };
         underTest.assertData(singleBinAssertion);
+    }
+
+    private void checkPixelCoordinatesInTargetRegion(int[][] pixelCoordinates, Rectangle targetRegion) {
+        final int xMax = targetRegion.x + targetRegion.width;
+        final int yMax = targetRegion.y + targetRegion.height;
+        for (int[] coordinates : pixelCoordinates) {
+            final int x = coordinates[xIndex];
+            final int y = coordinates[yIndex];
+            Assert.assertTrue("Internal error: pixel coordinate outside the target region x-range.", targetRegion.x <= x && x < xMax);
+            Assert.assertTrue("Internal error: pixel coordinate outside the target region y-range.", targetRegion.y <= y && y < yMax);
+        }
     }
 
     private void assertDataSize(int[][][] data, int n) {

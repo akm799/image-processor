@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.awt.*;
 import java.util.Random;
 
 abstract class AbstractColourHistogramShiftTest {
@@ -14,59 +14,71 @@ abstract class AbstractColourHistogramShiftTest {
     private final int binWidth = 5;
     private final Random random = new Random(System.currentTimeMillis());
     private final int singleColour = ColourHelper.getRgb(255, 0, 0);
+    private final int w = 10;
+    private final int h = 10;
 
     private ColourHistogram underTest;
+    private Rectangle targetRegion;
 
-    private int w;
-    private int h;
 
     @Before
     public void setup() {
         underTest = instance(binWidth);
 
-        w = 3 + random.nextInt(2);
-        h = 3 + random.nextInt(2);
-        ColourHistogramTestHelper.fillColourHistogramWithSingleColour(underTest, w, h, singleColour);
+        targetRegion = buildTargetRegion();
+        ColourHistogramTestHelper.fillColourHistogramWithSingleColour(underTest, w, h, singleColour, targetRegion);
+    }
+
+    private Rectangle buildTargetRegion() {
+        final int side = 3 + random.nextInt(2);
+        final int x = random.nextInt(w - side);
+        final int y = random.nextInt(h - side);
+
+        return new Rectangle(x, y, side, side);
     }
 
     abstract ColourHistogram instance(int binWidth);
 
     @Test
     public void shouldShiftToSingleColourSinglePixel() {
-        final int x = random.nextInt(w);
-        final int y = random.nextInt(h);
-        final int[][] segmentPixels = new int[h][w];
-        segmentPixels[y][x] = singleColour;
+        final int x = targetRegion.x + random.nextInt(targetRegion.width);
+        final int y = targetRegion.y + random.nextInt(targetRegion.height);
+        final int[][] imagePixels = new int[h][w];
+        imagePixels[y][x] = singleColour;
 
         final int[] centre = new int[]{-1, -1};
-        underTest.findSimilarityCentre(segmentPixels, centre);
+        underTest.findSimilarityCentre(imagePixels, targetRegion, centre);
         Assert.assertEquals(x, centre[xIndex]);
         Assert.assertEquals(y, centre[yIndex]);
     }
 
     @Test
     public void shouldShiftHorizontallyToSingleColourColumn() {
-        final int x = random.nextInt(w);
-        final int[][] segmentPixels = new int[h][w];
-        for (int j=0 ; j<h ; j++) {
-            segmentPixels[j][x] = singleColour;
+        final int yMax = targetRegion.y + targetRegion.height;
+        final int x = targetRegion.x + random.nextInt(targetRegion.width);
+        final int[][] imagePixels = new int[h][w];
+        for (int j=targetRegion.y ; j<yMax ; j++) {
+            imagePixels[j][x] = singleColour;
         }
 
         final int[] centre = new int[]{-1, -1};
-        underTest.findSimilarityCentre(segmentPixels, centre);
+        underTest.findSimilarityCentre(imagePixels, targetRegion, centre);
         Assert.assertEquals(x, centre[xIndex]);
-        Assert.assertEquals(h/2, centre[yIndex]);
+        Assert.assertEquals(targetRegion.y + targetRegion.height/2, centre[yIndex]);
     }
 
     @Test
     public void shouldShiftVerticallyToSingleColourRow() {
-        final int y = random.nextInt(h);
-        final int[][] segmentPixels = new int[h][w];
-        Arrays.fill(segmentPixels[y], singleColour);
+        final int xMax = targetRegion.x + targetRegion.width;
+        final int y = targetRegion.y + random.nextInt(targetRegion.height);
+        final int[][] imagePixels = new int[h][w];
+        for (int i=targetRegion.x ; i<xMax ; i++) {
+            imagePixels[y][i] = singleColour;
+        }
 
         final int[] centre = new int[]{-1, -1};
-        underTest.findSimilarityCentre(segmentPixels, centre);
-        Assert.assertEquals(w/2, centre[xIndex]);
+        underTest.findSimilarityCentre(imagePixels, targetRegion, centre);
+        Assert.assertEquals(targetRegion.x + targetRegion.width/2, centre[xIndex]);
         Assert.assertEquals(y, centre[yIndex]);
     }
 }

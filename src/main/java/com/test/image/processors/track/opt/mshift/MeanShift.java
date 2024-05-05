@@ -35,11 +35,10 @@ final class MeanShift {
     }
 
     private int shiftSegment(int[][] imagePixels, Rectangle segment) {
-        copySegmentPixels(imagePixels, segment);
-        similarity.findSimilarityCentre(segmentPixels, centre);
+        similarity.findSimilarityCentre(segmentPixels, segment, centre);
 
-        final int dx = centre[X_INDEX] - segment.width/2;
-        final int dy = centre[Y_INDEX] - segment.height/2;
+        final int dx = centre[X_INDEX] - (segment.x + segment.width/2);
+        final int dy = centre[Y_INDEX] - (segment.y + segment.height/2);
         if (outOfRange(imagePixels, segment, dx, dy)) {
             System.out.println("Stopped shifting because we will shift outside the image bounds.");
             return -1; // Stop shifting because we will shift outside the image bounds.
@@ -50,12 +49,6 @@ final class MeanShift {
         segment.y += dy;
 
         return Math.max(Math.abs(dx), Math.abs(dy));
-    }
-
-    private void copySegmentPixels(int[][] imagePixels, Rectangle segment) {
-        for (int j=0 ; j<segment.height ; j++) {
-            System.arraycopy(imagePixels[j+segment.y], segment.x, segmentPixels[j], 0, segment.width);
-        }
     }
 
     private boolean outOfRange(int[][] imagePixels, Rectangle segment, int dx, int dy) {

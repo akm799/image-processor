@@ -3,6 +3,8 @@ package com.test.image.processors.track.opt.mshift.impl;
 import com.test.image.processors.track.opt.mshift.ColourHistogram;
 import com.test.image.test.ColourHistogramDataAssertion;
 
+import java.awt.*;
+
 abstract class AbstractColourHistogram implements ColourHistogram {
     private static final int RED_INDEX = 0;
     private static final int GREEN_INDEX = 1;
@@ -24,11 +26,12 @@ abstract class AbstractColourHistogram implements ColourHistogram {
     }
 
     @Override
-    public final void fill(int[][] imagePixels) {
-        final int w = imagePixels[0].length;
-        for (int[] row : imagePixels) {
-            for (int i=0; i<w; i++) {
-                getRgbValues(row[i], rgbValues);
+    public final void fill(int[][] imagePixels, Rectangle targetRegion) {
+        final int xMax = targetRegion.x + targetRegion.width;
+        final int yMax = targetRegion.y + targetRegion.height;
+        for (int j=targetRegion.y ; j<yMax ; j++) {
+            for (int i=targetRegion.x ; i<xMax ; i++) {
+                getRgbValues(imagePixels[j][i], rgbValues);
                 final int ri = rgbValues[RED_INDEX]   / binWidth;
                 final int gi = rgbValues[GREEN_INDEX] / binWidth;
                 final int bi = rgbValues[BLUE_INDEX]  / binWidth;
@@ -38,13 +41,14 @@ abstract class AbstractColourHistogram implements ColourHistogram {
     }
 
     @Override
-    public final int findSimilarityScore(int[][] segmentPixels) {
-        final int w = segmentPixels[0].length;
+    public final int findSimilarityScore(int[][] imagePixels, Rectangle targetRegion) {
+        final int xMax = targetRegion.x + targetRegion.width;
+        final int yMax = targetRegion.y + targetRegion.height;
 
         int score = 0;
-        for (int[] row : segmentPixels) {
-            for (int i=0 ; i<w ; i++) {
-                getRgbValues(row[i], rgbValues);
+        for (int j=targetRegion.y ; j<yMax ; j++) {
+            for (int i=targetRegion.x ; i<xMax ; i++) {
+                getRgbValues(imagePixels[j][i], rgbValues);
                 final int ri = rgbValues[RED_INDEX] / binWidth;
                 final int gi = rgbValues[GREEN_INDEX] / binWidth;
                 final int bi = rgbValues[BLUE_INDEX] / binWidth;
@@ -56,19 +60,19 @@ abstract class AbstractColourHistogram implements ColourHistogram {
     }
 
     @Override
-    public final void findSimilarityCentre(int[][] segmentPixels, int[] centre) {
-        final int h = segmentPixels.length;
-        final int w = segmentPixels[0].length;
+    public final void findSimilarityCentre(int[][] imagePixels, Rectangle targetRegion, int[] centre) {
+        final int xMax = targetRegion.x + targetRegion.width;
+        final int yMax = targetRegion.y + targetRegion.height;
 
         int xc = 0;
         int yc = 0;
         int sumOfWeights = 0;
-        for (int j=0 ; j<h ; j++) {
-            for (int i=0 ; i<w ; i++) {
-                getRgbValues(segmentPixels[j][i], rgbValues);
-                final int ri = rgbValues[RED_INDEX]/binWidth;
-                final int gi = rgbValues[GREEN_INDEX]/binWidth;
-                final int bi = rgbValues[BLUE_INDEX]/binWidth;
+        for (int j=targetRegion.y ; j<yMax ; j++) {
+            for (int i=targetRegion.x ; i<xMax ; i++) {
+                getRgbValues(imagePixels[j][i], rgbValues);
+                final int ri = rgbValues[RED_INDEX] / binWidth;
+                final int gi = rgbValues[GREEN_INDEX] / binWidth;
+                final int bi = rgbValues[BLUE_INDEX] / binWidth;
                 final int weight = data[ri][gi][bi];
                 xc += weight*i;
                 yc += weight*j;
