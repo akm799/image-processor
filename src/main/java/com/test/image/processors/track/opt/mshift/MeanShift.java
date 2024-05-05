@@ -9,15 +9,14 @@ final class MeanShift {
     private final ColourHistogram similarity;
     private final int[] centre = new int[2];
 
-    private int[][] segmentPixels;
-
     MeanShift(ColourHistogram similarity) {
         this.similarity = similarity;
     }
 
     Rectangle shift(int[][] imagePixels, Rectangle start) {
         final Rectangle segment = new Rectangle(start);
-        segmentPixels = new int[segment.height][segment.width];
+        centre[X_INDEX] = segment.x + segment.width/2;
+        centre[Y_INDEX] = segment.y + segment.height/2;
 
         final int deltaMin = 5; // TODO Determine optimum size.
         final int maxTries = 100;
@@ -35,10 +34,12 @@ final class MeanShift {
     }
 
     private int shiftSegment(int[][] imagePixels, Rectangle segment) {
-        similarity.findSimilarityCentre(segmentPixels, segment, centre);
+        final int xCentrePrevious = centre[X_INDEX];
+        final int yCentrePrevious = centre[Y_INDEX];
+        similarity.findSimilarityCentre(imagePixels, segment, centre);
 
-        final int dx = centre[X_INDEX] - (segment.x + segment.width/2);
-        final int dy = centre[Y_INDEX] - (segment.y + segment.height/2);
+        final int dx = centre[X_INDEX] - xCentrePrevious;
+        final int dy = centre[Y_INDEX] - yCentrePrevious;
         if (outOfRange(imagePixels, segment, dx, dy)) {
             System.out.println("Stopped shifting because we will shift outside the image bounds.");
             return -1; // Stop shifting because we will shift outside the image bounds.
