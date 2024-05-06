@@ -1,4 +1,6 @@
-package com.test.image.processors.track.opt.mshift;
+package com.test.image.processors.track.opt.mshift.histo;
+
+import com.test.image.processors.track.opt.mshift.ColourHistogram;
 
 import java.awt.*;
 

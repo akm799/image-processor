@@ -1,4 +1,4 @@
-package com.test.image.processors.track.opt.mshift.impl;
+package com.test.image.processors.track.opt.mshift.impl.histo;
 
 import com.test.image.processors.track.opt.mshift.ColourHistogram;
 import com.test.image.test.ColourHistogramDataAssertion;

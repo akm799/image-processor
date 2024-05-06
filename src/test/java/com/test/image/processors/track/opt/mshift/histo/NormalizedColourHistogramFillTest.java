@@ -1,6 +1,7 @@
-package com.test.image.processors.track.opt.mshift;
+package com.test.image.processors.track.opt.mshift.histo;
 
-import com.test.image.processors.track.opt.mshift.impl.ColourHistogramFactory;
+import com.test.image.processors.track.opt.mshift.ColourHistogram;
+import com.test.image.processors.track.opt.mshift.impl.histo.ColourHistogramFactory;
 import com.test.image.util.ColourHelper;
 
 public class NormalizedColourHistogramFillTest extends AbstractColourHistogramFillTest {
