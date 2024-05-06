@@ -81,4 +81,18 @@ abstract class AbstractColourHistogramShiftTest {
         Assert.assertEquals(targetRegion.x + targetRegion.width/2, centre[xIndex]);
         Assert.assertEquals(y, centre[yIndex]);
     }
+
+    @Test
+    public void shouldNotShiftWhenNotRequired() {
+        final Rectangle targetRegion = new Rectangle(2, 2, 3, 3);
+        final int x = targetRegion.x + targetRegion.width/2; // x target region centre
+        final int y = targetRegion.y + targetRegion.height/2; // y target region centre
+        final int[][] imagePixels = new int[h][w];
+        imagePixels[y][x] = singleColour;
+
+        final int[] centre = new int[]{-1, -1};
+        underTest.findSimilarityCentre(imagePixels, targetRegion, centre);
+        Assert.assertEquals(x, centre[xIndex]);
+        Assert.assertEquals(y, centre[yIndex]);
+    }
 }
