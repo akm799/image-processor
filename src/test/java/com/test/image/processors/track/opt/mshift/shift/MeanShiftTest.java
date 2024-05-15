@@ -13,7 +13,9 @@ public class MeanShiftTest {
     private final static int Y_INDEX = 1;
 
 
-    private final int[][] imagePixels = new int[50][50];
+    private final int width = 50;
+    private final int height = 50;
+    private final int[][] imagePixels = new int[height][width];
     private final Rectangle targetRegion = new Rectangle(1, 2, 9, 9);
     private final int xTargetRegionCentre = targetRegion.x + targetRegion.width/2;
     private final int yTargetRegionCentre = targetRegion.y + targetRegion.height/2;
@@ -66,8 +68,11 @@ public class MeanShiftTest {
 
     @Test
     public void shouldStopShiftingWhenOverImageBorder() {
+        final int xStep = 5;
         final int[][] centres = new int[100][];
-        final int lastIndex = populateCentres(8, 15, 5, centres);
+        Assert.assertTrue(centres.length * xStep > width);
+
+        final int lastIndex = populateOverTheBorderCentres(8, xStep, centres);
         Assert.assertTrue(lastIndex > 0);
         Assert.assertTrue(lastIndex < centres.length - 10);
 
@@ -77,15 +82,17 @@ public class MeanShiftTest {
         final MeanShift underTest = MeanShiftFactory.instance(1, 1000);
         final Rectangle actual = underTest.shift(similarity, imagePixels, targetRegion);
         Assert.assertEquals(expected, actual);
+        Assert.assertTrue(actual.x + actual.width <= width);
+        Assert.assertTrue(actual.x + actual.width + xStep > width);
     }
 
-    private int populateCentres(int x0, int y0, int xStep, int[][] centres) {
+    private int populateOverTheBorderCentres(int x0, int xStep, int[][] centres) {
         int lastIndex = -1;
 
         int x = x0;
         for (int i=0 ; i<centres.length ; i++) {
-            centres[i] = new int[]{x, y0};
-            if (lastIndex < 0 && x + targetRegion.width > imagePixels[0].length) {
+            centres[i] = new int[]{x, 15};
+            if (lastIndex < 0 && x + targetRegion.width > width) {
                 lastIndex = i;
             }
 
