@@ -21,12 +21,78 @@ public class MeanShiftTest {
     @Test
     public void shouldShift() {
         final int[][] centres = {{8, 9}, {9, 10}};
-        final Rectangle expected = expectedShiftResult(centres);
+        final Rectangle expected = expectedShiftResultFromLastCentre(centres);
         final ColourHistogram similarity = mockColourHistogram(centres);
 
         final MeanShift underTest = MeanShiftFactory.instance(1, 10);
         final Rectangle actual = underTest.shift(similarity, imagePixels, targetRegion);
         Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldShiftHorizontally() {
+        final int[][] centres = {{8, yTargetRegionCentre}, {9, yTargetRegionCentre}};
+        final Rectangle expected = expectedShiftResultFromLastCentre(centres);
+        final ColourHistogram similarity = mockColourHistogram(centres);
+
+        final MeanShift underTest = MeanShiftFactory.instance(1, 10);
+        final Rectangle actual = underTest.shift(similarity, imagePixels, targetRegion);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldShiftVertically() {
+        final int[][] centres = {{xTargetRegionCentre, 9}, {xTargetRegionCentre, 10}};
+        final Rectangle expected = expectedShiftResultFromLastCentre(centres);
+        final ColourHistogram similarity = mockColourHistogram(centres);
+
+        final MeanShift underTest = MeanShiftFactory.instance(1, 10);
+        final Rectangle actual = underTest.shift(similarity, imagePixels, targetRegion);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldStopShiftingWhenMaxTriesExceeded() {
+        final int maxTries = 5;
+        final int[][] centres = {{8, 9}, {10, 11}, {12, 13}, {14, 15}, {16, 17}, {18, 19}, {20, 21}};
+        Assert.assertTrue(centres.length > maxTries);
+        final Rectangle expected = expectedShiftResult(centres[maxTries-1]);
+        final ColourHistogram similarity = mockColourHistogram(centres);
+
+        final MeanShift underTest = MeanShiftFactory.instance(1, maxTries);
+        final Rectangle actual = underTest.shift(similarity, imagePixels, targetRegion);
+        Assert.assertEquals(expected, actual);
+    }
+
+    @Test
+    public void shouldStopShiftingWhenOverImageBorder() {
+        final int[][] centres = new int[100][];
+        final int lastIndex = populateCentres(8, 15, 5, centres);
+        Assert.assertTrue(lastIndex > 0);
+        Assert.assertTrue(lastIndex < centres.length - 10);
+
+        final Rectangle expected = expectedShiftResult(centres[lastIndex]);
+        final ColourHistogram similarity = mockColourHistogram(centres);
+
+        final MeanShift underTest = MeanShiftFactory.instance(1, 1000);
+        final Rectangle actual = underTest.shift(similarity, imagePixels, targetRegion);
+        Assert.assertEquals(expected, actual);
+    }
+
+    private int populateCentres(int x0, int y0, int xStep, int[][] centres) {
+        int lastIndex = -1;
+
+        int x = x0;
+        for (int i=0 ; i<centres.length ; i++) {
+            centres[i] = new int[]{x, y0};
+            if (lastIndex < 0 && x + targetRegion.width > imagePixels[0].length) {
+                lastIndex = i;
+            }
+
+            x += xStep;
+        }
+
+        return lastIndex;
     }
 
     private ColourHistogram mockColourHistogram(int[][] centres) {
@@ -36,9 +102,13 @@ public class MeanShiftTest {
         return histogram;
     }
 
-    private Rectangle expectedShiftResult(int[][] centres) {
-        final int dx = centres[centres.length-1][X_INDEX] - xTargetRegionCentre;
-        final int dy = centres[centres.length-1][Y_INDEX] - yTargetRegionCentre;
+    private Rectangle expectedShiftResultFromLastCentre(int[][] centres) {
+        return expectedShiftResult(centres[centres.length-1]);
+    }
+
+    private Rectangle expectedShiftResult(int[] centre) {
+        final int dx = centre[X_INDEX] - xTargetRegionCentre;
+        final int dy = centre[Y_INDEX] - yTargetRegionCentre;
         final int x = targetRegion.x + dx;
         final int y = targetRegion.y + dy;
 
